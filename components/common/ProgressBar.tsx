@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 
-export function ProgressBar() {
+function ProgressBarContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [progress, setProgress] = useState(0)
@@ -59,5 +59,13 @@ export function ProgressBar() {
         boxShadow: "0 0 10px rgba(59, 130, 246, 0.5)",
       }}
     />
+  )
+}
+
+export function ProgressBar() {
+  return (
+    <Suspense fallback={null}>
+      <ProgressBarContent />
+    </Suspense>
   )
 }
