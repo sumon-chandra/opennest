@@ -52,11 +52,11 @@ export const login = async ({ email, password, redirectTo }: LoginPayload) => {
     }
 
     if (decodedToken.role === "TENANT") {
-      redirect("/dashboard")
+      redirect("/dashboard/tenant")
     } else if (decodedToken.role === "LANDLORD") {
-      redirect("/landlord-dashboard")
+      redirect("/dashboard/landlord")
     } else if (decodedToken.role === "ADMIN") {
-      redirect("/admin-dashboard")
+      redirect("/dashboard/admin")
     }
   }
 

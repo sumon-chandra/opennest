@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react"
 
+import { Property } from "@/types/property"
+
 const FAVORITE_STORAGE_KEY = "opennest_favorite_properties"
 export type FavoritePropertyId = string | number
 
@@ -63,5 +65,17 @@ export function useFavorite() {
     [favorites]
   )
 
-  return { isFavorite, addFavorite, removeFavorite }
+  const getFavoriteProperties = useCallback(
+    (properties: Property[]) => {
+      return properties.filter((property) => favorites.includes(property.id))
+    },
+    [favorites]
+  )
+
+  return {
+    isFavorite,
+    addFavorite,
+    removeFavorite,
+    favorites: getFavoriteProperties,
+  }
 }
