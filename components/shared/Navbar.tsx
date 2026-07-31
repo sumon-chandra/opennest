@@ -6,21 +6,28 @@ import Link from "next/link"
 import { Menu, X, LogOut, User } from "lucide-react"
 import { motion } from "framer-motion"
 import { NAVIGATION_LINKS } from "@/lib/constants"
-import { useAuth } from "@/lib/auth-context"
+import { User as UserType } from "@/types/user"
+import Image from "next/image"
 
-export function Navbar() {
+interface NavbarProps {
+  user: UserType
+  logout: () => void
+}
+
+export function Navbar({ user, logout }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const router = useRouter()
-  const { user, logout } = useAuth()
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
   const handleListProperty = () => {
     if (user) {
+      console.log("User is logged in. ", { user })
       // In a real app, navigate to property listing form
-      router.push("/properties/create")
+      // router.push("/properties/create")
     } else {
+      console.log("User is not logged in")
       router.push("/auth/login")
     }
   }
@@ -86,7 +93,7 @@ export function Navbar() {
                   className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
                 >
                   <div className="h-6 w-6 overflow-hidden rounded-full">
-                    <img
+                    <Image
                       src={user.avatar || "/avatars/1.png"}
                       alt={user.name}
                       className="h-full w-full object-cover"
@@ -126,7 +133,7 @@ export function Navbar() {
                 onClick={handleListProperty}
                 className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
               >
-                List Property
+                Get Start
               </button>
             )}
           </div>

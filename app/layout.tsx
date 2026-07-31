@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { ProgressBar } from "@/components/common/ProgressBar"
+import { Toaster } from "@/components/ui/toast"
 
 export const metadata: Metadata = {
   title: "OpenNest - Premium Property Rentals",
@@ -48,6 +49,7 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <body className="antialiased">
         <ProgressBar />
+        <Toaster />
         {children}
       </body>
     </html>
