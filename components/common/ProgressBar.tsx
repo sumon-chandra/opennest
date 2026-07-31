@@ -51,7 +51,7 @@ function ProgressBarContent() {
       initial={{ scaleX: 0 }}
       animate={{ scaleX: Math.min(progress / 100, 1) }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`fixed top-0 left-0 z-50 h-1 origin-left bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 ${
+      className={`fixed top-0 left-0 z-50 h-1 origin-left bg-primary/60 ${
         !isVisible && progress === 100 ? "opacity-0" : "opacity-100"
       }`}
       style={{
