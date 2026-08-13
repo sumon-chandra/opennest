@@ -41,7 +41,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
           {/* Image */}
           <div className="relative h-48 w-full overflow-hidden bg-muted">
             <Image
-              src={property.image}
+              src={property.thumbnail}
               alt={property.title}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
@@ -58,7 +58,8 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
               />
             </button>
             <div className="absolute bottom-3 left-3 rounded bg-white/90 px-2 py-1 text-xs font-semibold">
-              {property.category}
+              {/* {property.category} */}
+              Category
             </div>
           </div>
 

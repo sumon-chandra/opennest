@@ -34,25 +34,6 @@ export const FOOTER_LINKS = {
   ],
 }
 
-export const CATEGORIES = [
-  {
-    id: "1",
-    name: "Modern Apartments",
-    count: 328,
-    image: "/categories/1.png",
-  },
-  { id: "2", name: "Luxury Villas", count: 145, image: "/categories/2.png" },
-  { id: "3", name: "Beachfront Homes", count: 89, image: "/categories/3.png" },
-  { id: "4", name: "Mountain Cabins", count: 67, image: "/categories/4.png" },
-  { id: "5", name: "City Lofts", count: 234, image: "/categories/5.png" },
-  {
-    id: "6",
-    name: "Countryside Estates",
-    count: 112,
-    image: "/categories/6.png",
-  },
-]
-
 export const AMENITIES = [
   { id: "1", name: "WiFi", icon: "Wifi" },
   { id: "2", name: "Kitchen", icon: "UtensilsCrossed" },

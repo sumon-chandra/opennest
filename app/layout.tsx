@@ -2,6 +2,14 @@ import type { Metadata, Viewport } from "next"
 import "./globals.css"
 import { ProgressBar } from "@/components/common/ProgressBar"
 import { Toaster } from "@/components/ui/toast"
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query"
+import AppProviders from "@/components/AppProviders"
+
+const queryClient = new QueryClient()
 
 export const metadata: Metadata = {
   title: "OpenNest - Premium Property Rentals",
@@ -50,7 +58,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ProgressBar />
         <Toaster />
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )

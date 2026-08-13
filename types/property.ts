@@ -1,12 +1,23 @@
+import { PropertyStatus } from "."
+
 export interface Property {
-  id: string | number
+  id: string
   title: string
-  image: string
-  category: string
+  description: string
   location: string
+  price: number
   bedrooms: number
+  thumbnail: string
+  images: string[]
   bathrooms: number
   rating: number
-  reviews: number
-  price: number
+  amenities: string[]
+  reviews: string[]
+  featured: boolean
+  area?: number | null
+  status: PropertyStatus
+  landlordId: string
+  categoryId: string
+  createdAt: Date
+  updatedAt: Date
 }
