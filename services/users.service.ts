@@ -3,7 +3,6 @@
 import { login } from "@/app/(auth)/_actions/auth-actions"
 import { ApiResponse } from "@/types"
 import { User } from "@/types/user"
-import { redirect } from "next/navigation"
 
 type CreateUserPayload = {
   role?: string
@@ -35,12 +34,8 @@ export async function createUser(payload: CreateUserPayload) {
 
   const newUser = (await res.json()) as ApiResponse<User>
 
-  redirect("/login")
-
-  // await login({
-  //   email: payload.email,
-  //   password: payload.password,
-  // })
-
-  return newUser
+  return {
+    ...newUser,
+    redirectUrl: "/login",
+  }
 }

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import * as z from "zod"
+import { useRouter } from "next/navigation"
 
 import {
   Field,
@@ -23,7 +24,7 @@ import { LoaderIcon } from "lucide-react"
 import { createUser } from "@/services/users.service"
 import { toast } from "@/components/ui/toast"
 import { login } from "../_actions/auth-actions"
-import { redirect } from "next/navigation"
+
 
 const formSchema = z.object({
   role: z.enum(["TENANT", "LANDLORD", "ADMIN"], {
@@ -35,20 +36,21 @@ const formSchema = z.object({
   email: z
     .string({ error: "Add your email address" })
     .email({ message: "Invalid email" }),
-  phone: z.string().optional(),
+  phone: z.string().nullish(),
   password: z
     .string({ error: "Please add your password" })
     .min(6, { error: "Password must be at least 6 characters" }),
 })
 
 export function SignupForm() {
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       role: "TENANT",
       name: "",
       email: "",
-      phone: "",
+      phone: null,
       password: "",
     },
   })
@@ -60,16 +62,20 @@ export function SignupForm() {
         name: data.name,
         email: data.email,
         password: data.password,
-        phone: data.phone,
+        phone: data.phone ?? undefined,
       })
 
       console.log({ newUser })
 
-      if (!newUser.success) {
+      if (newUser.success) {
+        form.reset()
+        // Handle redirect if provided
+        if ("redirectUrl" in newUser && newUser.redirectUrl) {
+          router.push(newUser.redirectUrl)
+        }
+      } else {
         toast.add({ title: newUser.message })
       }
-
-      form.reset()
     } catch (error) {
       const message =
         error instanceof Error
@@ -178,6 +184,7 @@ export function SignupForm() {
                 <FieldLabel htmlFor="phone">Enter you phone number</FieldLabel>
                 <Input
                   {...field}
+                  value={field.value ?? ""}
                   id="phone"
                   aria-invalid={fieldState.invalid}
                   placeholder="01712345678"
