@@ -33,7 +33,7 @@ export function EditPropertyForm({ property }: EditPropertyFormProps) {
       bathrooms: property.bathrooms,
       area: property.area ?? null,
       thumbnail: property.thumbnail,
-      images: property.images?.map((url) => ({ url })) ?? [],
+      images: property.images ?? [],
       amenities: property.amenities ?? [],
       status: property.status,
       categoryId: property.categoryId,
@@ -47,13 +47,39 @@ export function EditPropertyForm({ property }: EditPropertyFormProps) {
   } = methods
 
   const onSubmit: SubmitHandler<PropertyFormValues> = async (values) => {
-    const result = await updateProperty(property.id, {
-      ...values,
-      images: values.images.map((i) => i.url),
-      amenities: values.amenities,
-      featured: values.featured,
-      area: values.area,
+    // 1. Construct FormData
+    const formData = new FormData()
+    formData.append("title", values.title)
+    formData.append("description", values.description)
+    formData.append("location", values.location)
+    formData.append("price", values.price.toString())
+    formData.append("bedrooms", values.bedrooms.toString())
+    formData.append("bathrooms", values.bathrooms.toString())
+    if (values.area) formData.append("area", values.area.toString())
+    formData.append("status", values.status)
+    formData.append("categoryId", values.categoryId)
+    formData.append("featured", values.featured.toString())
+
+    // Arrays
+    values.amenities.forEach((a) => formData.append("amenities", a))
+    
+    // Files or Existing URLs
+    if (values.thumbnail instanceof File) {
+      formData.append("thumbnail", values.thumbnail)
+    } else if (typeof values.thumbnail === "string") {
+      formData.append("thumbnail", values.thumbnail)
+    }
+
+    values.images.forEach((img) => {
+      if (img instanceof File) {
+        formData.append("images", img)
+      } else if (typeof img === "string") {
+        formData.append("images", img)
+      }
     })
+
+    // 2. Submit via Server Action
+    const result = await updateProperty(property.id, formData)
 
     if (result.success) {
       toast.success("Property updated successfully!")

@@ -42,13 +42,32 @@ export default function CreatePropertyPage() {
   } = methods
 
   const onSubmit: SubmitHandler<PropertyFormValues> = async (values) => {
-    const result = await createProperty({
-      ...values,
-      images: values.images.map((i) => i.url),
-      amenities: values.amenities,
-      featured: values.featured,
-      area: values.area,
+    // 1. Construct FormData
+    const formData = new FormData()
+    formData.append("title", values.title)
+    formData.append("description", values.description)
+    formData.append("location", values.location)
+    formData.append("price", values.price.toString())
+    formData.append("bedrooms", values.bedrooms.toString())
+    formData.append("bathrooms", values.bathrooms.toString())
+    if (values.area) formData.append("area", values.area.toString())
+    formData.append("status", values.status)
+    formData.append("categoryId", values.categoryId)
+    formData.append("featured", values.featured.toString())
+
+    // Arrays
+    values.amenities.forEach((a) => formData.append("amenities", a))
+    
+    // Files
+    if (values.thumbnail instanceof File) {
+      formData.append("thumbnail", values.thumbnail)
+    }
+    values.images.forEach((img) => {
+      if (img instanceof File) formData.append("images", img)
     })
+
+    // 2. Submit via Server Action
+    const result = await createProperty(formData)
 
     if (result.success) {
       toast.success("Property created successfully!")
@@ -61,7 +80,7 @@ export default function CreatePropertyPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
