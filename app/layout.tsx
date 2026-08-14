@@ -1,15 +1,14 @@
 import type { Metadata, Viewport } from "next"
-import "./globals.css"
 import { ProgressBar } from "@/components/common/ProgressBar"
 import { Toaster } from "@/components/ui/toast"
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query"
 import AppProviders from "@/components/AppProviders"
+import "./globals.css"
+import { Outfit } from "next/font/google"
 
-const queryClient = new QueryClient()
+const fontSans = Outfit({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export const metadata: Metadata = {
   title: "OpenNest - Premium Property Rentals",
@@ -54,8 +53,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background">
-      <body className="antialiased">
+    <html lang="en" className="bg-background" suppressHydrationWarning>
+      <body className={`${fontSans.variable} antialiased`}>
         <ProgressBar />
         <Toaster />
         <AppProviders>{children}</AppProviders>
