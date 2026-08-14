@@ -1,26 +1,41 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { motion } from "framer-motion"
-import { PropertyCard } from "@/components/property/PropertyCard"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { PropertyFilters } from "@/components/(public)/PropertyFilters"
+import { PropertiesHeader } from "@/components/(public)/PropertiesHeader"
+import { StickySearchBar } from "@/components/(public)/StickySearchBar"
+import { PropertiesGrid } from "@/components/(public)/PropertiesGrid"
+import { PropertiesInfoBar } from "@/components/(public)/PropertiesInfoBar"
+import { Pagination } from "@/components/(public)/Pagination"
+import { EmptyState } from "@/components/(public)/EmptyState"
 import { Property } from "@/types/property"
 import { useQuery } from "@tanstack/react-query"
 import { getProperties } from "../_actions/get-properties"
 import { ApiResponse } from "@/types"
+import { usePropertiesFilters } from "@/hooks/usePropertiesFilters"
+import { usePropertiesPagination } from "@/hooks/usePropertiesPagination"
 
-const ITEMS_PER_PAGE = 8
+const ITEMS_PER_PAGE = 9
 
 export default function PropertiesPage() {
   const [search, setSearch] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const filters = usePropertiesFilters()
 
   const { data: propertiesData, isPending: isPropertiesLoading } = useQuery<
     ApiResponse<Property[]>
   >({
-    queryKey: ["properties"],
+    queryKey: ["properties", filters],
     queryFn: async () => {
-      const response = await getProperties()
+      const response = await getProperties({
+        location: filters.location.length > 0 ? filters.location : undefined,
+        featured: filters.featured ? true : undefined,
+        amenities: filters.amenities.length > 0 ? filters.amenities : undefined,
+        minPrice: filters.minPrice > 0 ? filters.minPrice : undefined,
+        maxPrice: filters.maxPrice < 10000 ? filters.maxPrice : undefined,
+        minRating: filters.minRating > 0 ? filters.minRating : undefined,
+        sortBy: filters.sortBy !== "relevance" ? filters.sortBy : undefined,
+      })
       return response
     },
   })
@@ -35,19 +50,15 @@ export default function PropertiesPage() {
     )
   }, [propertiesData?.data, search])
 
-  const displayProperties = filteredProperties
-
-  // Pagination
-  const totalPages = Math.ceil(displayProperties.length / ITEMS_PER_PAGE)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const paginatedProperties = displayProperties.slice(
+  const {
+    currentPage,
+    totalPages,
     startIndex,
-    startIndex + ITEMS_PER_PAGE
-  )
-
-  // Reset to first page when search changes
-
-  // helper/container variants
+    paginatedItems,
+    setCurrentPage,
+  } = usePropertiesPagination(filteredProperties, {
+    itemsPerPage: ITEMS_PER_PAGE,
+  })
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -58,133 +69,67 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="bg-background">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <section className="bg-secondary/30 px-4 py-12">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="mb-4 text-4xl font-bold">Find Your Perfect Stay</h1>
-          <p className="text-muted-foreground">
-            Browse from {propertiesData?.data?.length || 0} premium properties
-          </p>
-        </div>
-      </section>
+      <PropertiesHeader propertiesCount={propertiesData?.data?.length || 0} />
 
-      {/* Search */}
-      <section className="border-b border-border px-4 py-8">
-        <div className="mx-auto max-w-7xl">
-          <input
-            type="text"
-            placeholder="Search properties by title, location..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground transition focus:ring-2 focus:ring-primary focus:outline-none"
-          />
-        </div>
-      </section>
+      {/* Sticky Search Bar */}
+      <StickySearchBar
+        search={search}
+        onSearchChange={setSearch}
+        sidebarOpen={sidebarOpen}
+        onToggleSidebar={setSidebarOpen}
+      />
 
       {/* Main Content */}
-      <section className="px-4 py-12">
+      <section className="px-4 py-8">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            {/* No sidebar - only search and results */}
+          <div className="flex gap-6">
+            {/* Sidebar - Filters */}
+            <aside
+              className={`fixed inset-0 top-24 z-20 w-64 overflow-y-auto border-r border-border bg-background p-4 transition-all lg:relative lg:inset-auto lg:top-auto lg:z-0 lg:block ${
+                sidebarOpen ? "block" : "hidden lg:block"
+              }`}
+            >
+              <PropertyFilters onFilterApply={() => setSidebarOpen(false)} />
+            </aside>
 
-            {/* Properties Grid */}
-            <div className="flex-1">
-              {/* Sort and Info */}
-              <div className="mb-6 flex items-center justify-between gap-4 border-b border-border pb-4">
-                <p className="text-sm text-muted-foreground">
-                  Showing {paginatedProperties.length > 0 ? startIndex + 1 : 0}-
-                  {Math.min(
-                    startIndex + ITEMS_PER_PAGE,
-                    displayProperties.length
-                  )}{" "}
-                  of {displayProperties.length}
-                </p>
-              </div>
+            {/* Main Content - Properties Grid */}
+            <main className="flex-1">
+              {/* Info Bar */}
+              <PropertiesInfoBar
+                startIndex={startIndex}
+                itemsPerPage={ITEMS_PER_PAGE}
+                totalItems={filteredProperties.length}
+                isLoading={isPropertiesLoading}
+              />
 
-              {/* Properties Grid */}
-              {paginatedProperties.length > 0 ? (
+              {/* Properties Grid or Skeleton */}
+              {isPropertiesLoading ? (
+                <PropertiesGrid
+                  properties={[]}
+                  isLoading={true}
+                  containerVariants={containerVariants}
+                />
+              ) : paginatedItems.length > 0 ? (
                 <>
-                  <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4"
-                  >
-                    {paginatedProperties.map((property, idx) => (
-                      <PropertyCard
-                        key={property.id}
-                        property={property}
-                        index={idx}
-                      />
-                    ))}
-                  </motion.div>
+                  <PropertiesGrid
+                    properties={paginatedItems}
+                    isLoading={false}
+                    containerVariants={containerVariants}
+                  />
 
                   {/* Pagination */}
-                  {totalPages > 1 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center justify-center gap-2 border-t border-border pt-8"
-                    >
-                      <button
-                        onClick={() =>
-                          setCurrentPage(Math.max(1, currentPage - 1))
-                        }
-                        disabled={currentPage === 1}
-                        className="rounded-lg border border-border p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                        aria-label="Previous page"
-                      >
-                        <ChevronLeft size={20} />
-                      </button>
-
-                      {/* Page Numbers */}
-                      <div className="flex gap-1">
-                        {Array.from(
-                          { length: totalPages },
-                          (_, i) => i + 1
-                        ).map((page) => (
-                          <motion.button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`rounded-lg border px-3 py-2 transition-all ${
-                              currentPage === page
-                                ? "border-primary bg-primary text-primary-foreground"
-                                : "border-border hover:bg-secondary"
-                            }`}
-                          >
-                            {page}
-                          </motion.button>
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={() =>
-                          setCurrentPage(Math.min(totalPages, currentPage + 1))
-                        }
-                        disabled={currentPage === totalPages}
-                        className="rounded-lg border border-border p-2 transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                        aria-label="Next page"
-                      >
-                        <ChevronRight size={20} />
-                      </button>
-                    </motion.div>
-                  )}
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
                 </>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="py-12 text-center"
-                >
-                  <p className="mb-4 text-muted-foreground">
-                    No properties found.
-                  </p>
-                </motion.div>
+                <EmptyState />
               )}
-            </div>
+            </main>
           </div>
         </div>
       </section>
