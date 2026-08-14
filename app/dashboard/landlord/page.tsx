@@ -101,13 +101,21 @@ export default function LandlordDashboard() {
             Manage your listings and track performance
           </p>
         </div>
-        <Link
-          href="/properties/create"
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          <Plus size={20} />
-          <span className="font-medium">List Property</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/landlord/properties"
+            className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            Manage Properties →
+          </Link>
+          <Link
+            href="/dashboard/landlord/properties/create"
+            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            <Plus size={20} />
+            <span className="font-medium">List Property</span>
+          </Link>
+        </div>
       </motion.div>
 
       {/* Stats Grid */}
