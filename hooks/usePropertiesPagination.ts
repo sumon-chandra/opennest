@@ -1,14 +1,14 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Property } from "@/types/property"
+import { PropertyResponse } from "@/types/property"
 
 interface UsePaginationOptions {
   itemsPerPage?: number
 }
 
 export function usePropertiesPagination(
-  items: Property[],
+  items: PropertyResponse[],
   options: UsePaginationOptions = {}
 ) {
   const { itemsPerPage = 8 } = options

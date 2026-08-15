@@ -261,7 +261,7 @@ export function LandlordPropertiesTable({
                     <td className="px-5 py-4">
                       <span className="flex items-center gap-1 font-medium text-yellow-500">
                         <Star size={14} className="fill-yellow-400" />
-                        {prop.rating > 0 ? prop.rating.toFixed(1) : "N/A"}
+                        {prop.rating ? prop.rating.toFixed(1) : "N/A"}
                       </span>
                     </td>
 
@@ -329,7 +329,7 @@ export function LandlordPropertiesTable({
                     </span>
                     <span className="flex items-center gap-1 text-xs font-medium text-yellow-500">
                       <Star size={12} className="fill-yellow-400" />
-                      {prop.rating > 0 ? prop.rating.toFixed(1) : "N/A"}
+                      {prop.rating ? prop.rating.toFixed(1) : "N/A"}
                     </span>
                     <span className="text-xs font-semibold text-foreground">
                       ${prop.price}/night

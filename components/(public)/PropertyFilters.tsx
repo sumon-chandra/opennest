@@ -6,8 +6,8 @@ import { ChevronDown, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
-// Common amenities list
 const AMENITIES = [
   "WiFi",
   "Air Conditioning",
@@ -19,7 +19,6 @@ const AMENITIES = [
   "Laundry",
 ]
 
-// Common locations (can be fetched from backend)
 const LOCATIONS = [
   "New York",
   "Los Angeles",
@@ -31,7 +30,6 @@ const LOCATIONS = [
   "San Diego",
 ]
 
-// Sort options
 const SORT_OPTIONS = [
   { value: "relevance", label: "Relevance" },
   { value: "price-asc", label: "Price: Low to High" },
@@ -48,7 +46,6 @@ export function PropertyFilters({
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Extract current filter values from URL
   const [location, setLocation] = useState<string[]>(
     searchParams.get("location")?.split(",").filter(Boolean) || []
   )
@@ -62,7 +59,7 @@ export function PropertyFilters({
     parseInt(searchParams.get("minPrice") || "0"),
   ])
   const [maxPrice, setMaxPrice] = useState([
-    parseInt(searchParams.get("maxPrice") || "10000"),
+    parseInt(searchParams.get("maxPrice") || "150000"),
   ])
   const [minRating, setMinRating] = useState([
     parseFloat(searchParams.get("minRating") || "0"),
@@ -71,7 +68,6 @@ export function PropertyFilters({
     searchParams.get("sortBy") || "relevance"
   )
 
-  // Track which sections are open
   const [openSections, setOpenSections] = useState({
     location: true,
     featured: true,
@@ -87,7 +83,6 @@ export function PropertyFilters({
     }))
   }
 
-  // Update URL with filters
   const applyFilters = useCallback(() => {
     const params = new URLSearchParams()
 
@@ -95,14 +90,13 @@ export function PropertyFilters({
     if (featured) params.set("featured", "true")
     if (amenities.length > 0) params.set("amenities", amenities.join(","))
     if (minPrice[0] > 0) params.set("minPrice", minPrice[0].toString())
-    if (maxPrice[0] < 10000) params.set("maxPrice", maxPrice[0].toString())
+    if (maxPrice[0] < 150000) params.set("maxPrice", maxPrice[0].toString())
     if (minRating[0] > 0) params.set("minRating", minRating[0].toString())
     if (sortBy !== "relevance") params.set("sortBy", sortBy)
 
     const queryString = params.toString()
     router.push(`/properties${queryString ? `?${queryString}` : ""}`)
 
-    // Close sidebar on mobile after applying filters
     onFilterApply?.()
   }, [
     location,
@@ -121,7 +115,7 @@ export function PropertyFilters({
     setFeatured(false)
     setAmenities([])
     setMinPrice([0])
-    setMaxPrice([10000])
+    setMaxPrice([150000])
     setMinRating([0])
     setSortBy("relevance")
     router.push("/properties")
@@ -148,7 +142,7 @@ export function PropertyFilters({
         featured ||
         amenities.length > 0 ||
         minPrice[0] > 0 ||
-        maxPrice[0] < 10000 ||
+        maxPrice[0] < 150000 ||
         minRating[0] > 0 ||
         sortBy !== "relevance") && (
         <Button
@@ -301,7 +295,7 @@ export function PropertyFilters({
               step="0.5"
               value={minRating[0]}
               onChange={(e) => setMinRating([parseFloat(e.target.value)])}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-primary"
             />
           </div>
         )}
@@ -325,11 +319,11 @@ export function PropertyFilters({
           <div className="space-y-3 pl-2">
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <label htmlFor="min-price" className="text-muted-foreground">
+                <Label htmlFor="min-price" className="text-muted-foreground">
                   Min: ${minPrice[0]}
-                </label>
+                </Label>
               </div>
-              <input
+              <Input
                 id="min-price"
                 type="range"
                 min="0"
@@ -337,24 +331,24 @@ export function PropertyFilters({
                 step="100"
                 value={minPrice[0]}
                 onChange={(e) => setMinPrice([parseInt(e.target.value)])}
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer accent-primary"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <label htmlFor="max-price" className="text-muted-foreground">
+                <Label htmlFor="max-price" className="text-muted-foreground">
                   Max: ${maxPrice[0]}
-                </label>
+                </Label>
               </div>
-              <input
+              <Input
                 id="max-price"
                 type="range"
                 min={Math.min(minPrice[0] + 100, maxPrice[0] - 100)}
-                max="10000"
+                max="150000"
                 step="100"
                 value={maxPrice[0]}
                 onChange={(e) => setMaxPrice([parseInt(e.target.value)])}
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer accent-primary"
               />
             </div>
           </div>

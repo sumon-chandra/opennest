@@ -20,3 +20,23 @@ export interface Property {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface PropertyResponse extends Property {
+  category: PropertyCategory;
+  landlord: PropertyLandlord;
+  _count: {
+    reviews: number;
+  favoriteProperties: number;
+  };
+}
+export interface PropertyCategory {
+  id: string;
+  name: string;
+}
+
+export interface PropertyLandlord {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string | null;
+}

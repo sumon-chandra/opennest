@@ -5,11 +5,11 @@ import Link from "next/link"
 import { Star, MapPin, Bed, Bath, Heart } from "lucide-react"
 
 import { useFavorite } from "@/hooks/useFavorite"
-import { Property } from "@/types/property"
+import { PropertyResponse } from "@/types/property"
 import Image from "next/image"
 
 interface PropertyCardProps {
-  property: Property
+  property: PropertyResponse
   index?: number
 }
 
@@ -26,6 +26,8 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
     }
   }
 
+  const propertyThumbnail = property.thumbnail || property.images?.[0] || "https://placehold.co/600x400/EEE/31343C.png?text=Property+Image+Unavailable"
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -41,14 +43,17 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
           {/* Image */}
           <div className="relative h-48 w-full overflow-hidden bg-muted">
             <Image
-              src={property.thumbnail}
+              src={propertyThumbnail}
               alt={property.title}
+              width={500}
+              height={500}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              priority
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
             <button
               onClick={handleToggleFavorite}
-              className="absolute top-3 right-3 rounded-full bg-white/80 p-2 transition-colors hover:bg-white"
+              className="absolute top-3 right-3 rounded-full bg-accent/90 p-2 transition-colors hover:bg-accent"
             >
               <Heart
                 size={20}
@@ -57,9 +62,8 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                 }
               />
             </button>
-            <div className="absolute bottom-3 left-3 rounded bg-white/90 px-2 py-1 text-xs font-semibold">
-              {/* {property.category} */}
-              Category
+            <div className="absolute bottom-3 left-3 rounded bg-foreground text-muted px-2 py-1 text-xs font-semibold">
+              {property.category.name}
             </div>
           </div>
 
@@ -88,12 +92,23 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             </div>
 
             {/* Rating */}
+            <div className="flex justify-between">
             <div className="mb-4 flex items-center gap-1 text-sm">
               <Star size={16} className="fill-yellow-400 text-yellow-400" />
               <span className="font-medium">{property.rating}</span>
               <span className="text-muted-foreground">
-                ({property.reviews})
+                ({property._count.reviews} Reviews)
               </span>
+            </div>
+            {property._count.favoriteProperties > 0 && (
+              <div className="mb-4 flex items-center gap-1 text-sm">
+                <Heart size={16} className="fill-red-500 text-red-500" />
+                <span className="font-medium">{property._count.favoriteProperties}</span>
+                <span className="text-muted-foreground">
+                  Favorites
+                </span>
+              </div>
+            )}
             </div>
 
             {/* Price */}

@@ -3,10 +3,10 @@
 import { motion } from "framer-motion"
 import { PropertyCard } from "@/components/property/PropertyCard"
 import { PropertyCardSkeleton } from "@/components/common/PropertyCardSkeleton"
-import { Property } from "@/types/property"
+import {  PropertyResponse } from "@/types/property"
 
 interface PropertiesGridProps {
-  properties: Property[]
+  properties: PropertyResponse[]
   isLoading: boolean
   containerVariants?: {
     hidden: { opacity: number }

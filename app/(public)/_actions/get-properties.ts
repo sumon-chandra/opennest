@@ -2,7 +2,7 @@
 import { apiFetch } from "../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
-import { Property } from "@/types/property"
+import { Property, PropertyResponse } from "@/types/property"
 
 interface GetPropertiesFilters {
   location?: string[]
@@ -56,7 +56,7 @@ export async function getProperties(filters?: GetPropertiesFilters) {
       tags: ["properties"],
     },
   })
-  const properties = (await response.json()) as ApiResponse<Property[]>
+  const properties = (await response.json()) as ApiResponse<PropertyResponse[]>
 
   return properties
 }

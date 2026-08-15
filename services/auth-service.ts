@@ -35,7 +35,6 @@ export const getAuthUser = async () => {
   })
 
   const result = (await res.json()) as ApiResponse<User>
-  console.log("getAuthUser result:", result)
   
   if (result && result.success === true) {
     return {

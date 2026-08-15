@@ -8,7 +8,7 @@ import { PropertiesGrid } from "@/components/(public)/PropertiesGrid"
 import { PropertiesInfoBar } from "@/components/(public)/PropertiesInfoBar"
 import { Pagination } from "@/components/(public)/Pagination"
 import { EmptyState } from "@/components/(public)/EmptyState"
-import { Property } from "@/types/property"
+import { PropertyResponse } from "@/types/property"
 import { useQuery } from "@tanstack/react-query"
 import { getProperties } from "../_actions/get-properties"
 import { ApiResponse } from "@/types"
@@ -23,7 +23,7 @@ export default function PropertiesPage() {
   const filters = usePropertiesFilters()
 
   const { data: propertiesData, isPending: isPropertiesLoading } = useQuery<
-    ApiResponse<Property[]>
+    ApiResponse<PropertyResponse[]>
   >({
     queryKey: ["properties", filters],
     queryFn: async () => {
