@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../utils/apiFetch";
 
 import { jwtUtils } from "@/utilities/jwt"
 import { cookies } from "next/headers"
@@ -15,7 +16,7 @@ export const getNewAccessToken = async () => {
     }
   }
 
-  const res = await fetch(
+  const res = await apiFetch(
     `${process.env.BACKEND_API_URL}/api/auth/refresh-token`,
     {
       method: "POST",

@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { Property } from "@/types/property"
@@ -48,7 +49,7 @@ export async function getProperties(filters?: GetPropertiesFilters) {
   const queryString = params.toString()
   const url = `${process.env.BACKEND_API_URL}api/v1/properties${queryString ? `?${queryString}` : ""}`
 
-  const response = await fetch(url, {
+  const response = await apiFetch(url, {
     cache: "no-cache",
     next: {
       revalidate: 60 * 60 * 6,

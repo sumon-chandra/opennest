@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { cookies } from "next/headers"
@@ -17,8 +18,8 @@ export async function deleteProperty(id: string): Promise<ApiResponse<null>> {
     }
   }
 
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/v1/properties/${id}`,
+  const res = await apiFetch(
+    `properties/${id}`,
     {
       method: "DELETE",
       headers: {

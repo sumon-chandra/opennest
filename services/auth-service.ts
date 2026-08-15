@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../utils/apiFetch";
 import { ApiResponse } from "./../types/index"
 
 import { cookies } from "next/headers"
@@ -6,7 +7,7 @@ import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { User } from "@/types/user"
 
-export const getAuthUser = async (): Promise<ApiResponse<User>> => {
+export const getAuthUser = async () => {
   const cookieStore = await cookies()
 
   const accessToken = cookieStore.get("accessToken")?.value || null
@@ -16,16 +17,13 @@ export const getAuthUser = async (): Promise<ApiResponse<User>> => {
       success: false,
       statusCode: 500,
       message: "User not logged in.",
-      data: null,
+      data: undefined,
     }
   }
 
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/v1/users/me`, {
+  const res = await apiFetch("/auth/me", {
     headers: {
-      // Authorization : accessToken as unknown as string,
-      // Authorization : `${accessToken}`,
-      // Authorization : `Bearer ${accessToken}`
-
+      Authorization : accessToken,
       Cookie: `accessToken=${accessToken}`,
     },
 
@@ -37,8 +35,21 @@ export const getAuthUser = async (): Promise<ApiResponse<User>> => {
   })
 
   const result = (await res.json()) as ApiResponse<User>
+  console.log("getAuthUser result:", result)
+  
+  if (result && result.success === true) {
+    return {
+      ...result,
+      data: result.data || undefined,
+    }
+  }
 
-  return result
+  return {
+    success: false,
+    statusCode: 500,
+    message: "Failed to fetch user.",
+    data: undefined,
+  }
 }
 
 export const logout = async () => {

@@ -61,6 +61,7 @@ export function LoginForm() {
                   aria-invalid={fieldState.invalid}
                   placeholder="john@deo.com"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -81,6 +82,7 @@ export function LoginForm() {
                   aria-invalid={fieldState.invalid}
                   type="password"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -88,17 +90,20 @@ export function LoginForm() {
               </Field>
             )}
           />
-          <FieldSeparator />
         </FieldGroup>
-        <Field>
-          <Button type="submit" className="cursor-pointer" disabled={isLoading}>
-            {isLoading ? <LoaderIcon className="animate-spin" /> : "Login"}
+        <Field className="mt-6">
+          <Button 
+            type="submit" 
+            className="w-full cursor-pointer bg-gradient-to-r from-primary to-primary/80 py-6 text-lg shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98]" 
+            disabled={isLoading}
+          >
+            {isLoading ? <LoaderIcon className="animate-spin" /> : "Sign In"}
           </Button>
         </Field>
       </form>
 
       {/* Sign up Link */}
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-muted-foreground mt-4">
         New here?{" "}
         <Link
           href="/signup"

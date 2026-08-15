@@ -1,3 +1,4 @@
+import { apiFetch } from "../../../../../../utils/apiFetch";
 import { notFound } from "next/navigation"
 import { cookies } from "next/headers"
 import { ApiResponse } from "@/types"
@@ -17,8 +18,8 @@ async function getProperty(id: string): Promise<Property | null> {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/v1/properties/${id}`,
+  const res = await apiFetch(
+    `properties/${id}`,
     {
       headers: accessToken
         ? { Cookie: `accessToken=${accessToken}` }

@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next"
-import { ProgressBar } from "@/components/common/ProgressBar"
-import { Toaster } from "@/components/ui/toast"
 import AppProviders from "@/components/AppProviders"
 import "./globals.css"
 import { Outfit } from "next/font/google"
@@ -54,10 +52,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background" suppressHydrationWarning>
-      <body className={`${fontSans.variable} antialiased`}>
-        <ProgressBar />
-        <Toaster />
-        <AppProviders>{children}</AppProviders>
+      <body className={`${fontSans.variable} antialiased`} suppressHydrationWarning>
+          <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )

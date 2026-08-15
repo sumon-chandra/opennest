@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { Property } from "@/types/property"
@@ -17,8 +18,8 @@ export async function getMyProperties(): Promise<ApiResponse<Property[]>> {
     }
   }
 
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/v1/properties/my-properties`,
+  const res = await apiFetch(
+    `properties/my-properties`,
     {
       headers: {
         Cookie: `accessToken=${accessToken}`,

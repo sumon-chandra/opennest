@@ -136,7 +136,6 @@ export function SignupForm() {
               )
             }}
           />
-          <FieldSeparator />
           <Controller
             name="name"
             control={form.control}
@@ -149,6 +148,7 @@ export function SignupForm() {
                   aria-invalid={fieldState.invalid}
                   placeholder="John Deo"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -169,6 +169,7 @@ export function SignupForm() {
                   aria-invalid={fieldState.invalid}
                   placeholder="john@deo.com"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -189,6 +190,7 @@ export function SignupForm() {
                   aria-invalid={fieldState.invalid}
                   placeholder="01712345678"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
               </Field>
             )}
@@ -206,6 +208,7 @@ export function SignupForm() {
                   aria-invalid={fieldState.invalid}
                   type="password"
                   autoComplete="off"
+                  className="border-white/10 bg-background/50 shadow-inner transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary/50"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -213,10 +216,13 @@ export function SignupForm() {
               </Field>
             )}
           />
-          <FieldSeparator />
         </FieldGroup>
-        <Field>
-          <Button type="submit" className="cursor-pointer" disabled={isLoading}>
+        <Field className="mt-6">
+          <Button 
+            type="submit" 
+            className="w-full cursor-pointer bg-gradient-to-r from-primary to-primary/80 py-6 text-lg shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98]" 
+            disabled={isLoading}
+          >
             {isLoading ? (
               <LoaderIcon className="animate-spin" />
             ) : (
@@ -226,7 +232,7 @@ export function SignupForm() {
         </Field>
       </form>
       {/* Terms and Privacy */}
-      <p className="text-center text-xs text-muted-foreground">
+      <p className="text-center text-xs text-muted-foreground mt-4">
         By signing up, you agree to our{" "}
         <Link href="/(static)/terms" className="text-primary hover:underline">
           Terms of Service

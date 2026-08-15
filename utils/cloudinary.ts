@@ -7,25 +7,35 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
+import sharp from "sharp"
+
 /**
  * Uploads a standard Web API File object to Cloudinary.
- * Used in Next.js Server Actions receiving FormData.
+ * Optimizes the image before upload using sharp (resize and compress).
  */
 export async function uploadFileToCloudinary(
   file: File,
   folder: string = "opennest/properties",
 ): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
+  const originalBuffer = Buffer.from(arrayBuffer)
+
+  // Optimize image to keep it under ~200KB
+  const optimizedBuffer = await sharp(originalBuffer)
+    .resize({
+      width: 1920,
+      height: 1920,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: 75 })
+    .toBuffer()
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder,
         resource_type: "image",
-        // Apply optimization parameters for quality/format
-        quality: "auto",
-        fetch_format: "auto",
       },
       (error, result) => {
         if (error || !result) {
@@ -36,6 +46,6 @@ export async function uploadFileToCloudinary(
       },
     )
 
-    uploadStream.end(buffer)
+    uploadStream.end(optimizedBuffer)
   })
 }

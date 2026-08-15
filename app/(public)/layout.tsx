@@ -9,11 +9,11 @@ export default async function PublicLayout({
 }: {
   children: ReactNode
 }) {
-  const { data: user } = await getAuthUser()
+  const { data } = await getAuthUser()
 
   return (
     <>
-      <Navbar user={user!} logout={logout} />
+      <Navbar user={data} logout={logout} />
       <div className="container mx-auto flex min-h-svh flex-col gap-6 px-4 py-6">
         <MotionDiv>{children}</MotionDiv>
       </div>

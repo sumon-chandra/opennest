@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../utils/apiFetch";
 
 import { login } from "@/app/(auth)/_actions/auth-actions"
 import { ApiResponse } from "@/types"
@@ -13,8 +14,8 @@ type CreateUserPayload = {
 }
 
 export async function createUser(payload: CreateUserPayload) {
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/v1/auth/register`,
+  const res = await apiFetch(
+    `auth/register`,
     {
       method: "POST",
       cache: "no-store",

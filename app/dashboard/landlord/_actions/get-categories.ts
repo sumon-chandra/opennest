@@ -1,11 +1,12 @@
 "use server"
+import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { Category } from "@/types/category"
 
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/v1/categories`,
+  const res = await apiFetch(
+    `categories`,
     {
       cache: "force-cache",
       next: {

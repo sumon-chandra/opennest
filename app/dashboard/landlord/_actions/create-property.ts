@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { Property } from "@/types/property"
@@ -9,6 +10,7 @@ import { uploadFileToCloudinary } from "@/utils/cloudinary"
 export async function createProperty(
   formData: FormData,
 ): Promise<ApiResponse<Property>> {
+  console.log("Server Action formData : ", formData)
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
@@ -60,9 +62,11 @@ export async function createProperty(
       featured: formData.get("featured") === "true",
     }
 
+    console.log("Server Action payload : ", payload)
+
     // 5. Send to backend
-    const res = await fetch(
-      `${process.env.BACKEND_API_URL}/api/v1/properties`,
+    const res = await apiFetch(
+      `properties`,
       {
         method: "POST",
         headers: {

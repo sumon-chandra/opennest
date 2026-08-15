@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { Property } from "@/types/property"
@@ -66,8 +67,8 @@ export async function updateProperty(
     if (formData.has("amenities")) payload.amenities = formData.getAll("amenities") as string[]
 
     // 4. Send to backend
-    const res = await fetch(
-      `${process.env.BACKEND_API_URL}/api/v1/properties/${id}`,
+    const res = await apiFetch(
+      `properties/${id}`,
       {
         method: "PATCH",
         headers: {

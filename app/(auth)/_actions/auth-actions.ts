@@ -1,4 +1,5 @@
 "use server"
+import { apiFetch } from "@/utils/apiFetch";
 
 import { ApiResponse } from "@/types"
 import { UserLoginToken } from "@/types/user"
@@ -13,7 +14,7 @@ interface LoginPayload {
 }
 
 export const login = async ({ email, password, redirectTo }: LoginPayload) => {
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/v1/auth/login`, {
+  const res = await apiFetch(`auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
