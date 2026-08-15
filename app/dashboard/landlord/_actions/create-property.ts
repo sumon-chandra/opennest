@@ -10,7 +10,6 @@ import { uploadFileToCloudinary } from "@/utils/cloudinary"
 export async function createProperty(
   formData: FormData,
 ): Promise<ApiResponse<Property>> {
-  console.log("Server Action formData : ", formData)
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
@@ -62,8 +61,6 @@ export async function createProperty(
       featured: formData.get("featured") === "true",
     }
 
-    console.log("Server Action payload : ", payload)
-
     // 5. Send to backend
     const res = await apiFetch(
       `properties`,
@@ -71,13 +68,15 @@ export async function createProperty(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Cookie: `accessToken=${accessToken}`,
+          Authorization: accessToken,
         },
         body: JSON.stringify(payload),
       },
     )
 
     const result = (await res.json()) as ApiResponse<Property>
+
+    console.log("Server Action result : ", result)
 
     if (result.success) {
       revalidateTag("my-properties", "max")

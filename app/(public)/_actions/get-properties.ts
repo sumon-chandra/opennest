@@ -47,7 +47,7 @@ export async function getProperties(filters?: GetPropertiesFilters) {
   }
 
   const queryString = params.toString()
-  const url = `${process.env.BACKEND_API_URL}api/v1/properties${queryString ? `?${queryString}` : ""}`
+  const url = `/properties${queryString ? `?${queryString}` : ""}`
 
   const response = await apiFetch(url, {
     cache: "no-cache",

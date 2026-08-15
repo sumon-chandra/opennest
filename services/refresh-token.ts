@@ -17,7 +17,7 @@ export const getNewAccessToken = async () => {
   }
 
   const res = await apiFetch(
-    `${process.env.BACKEND_API_URL}/api/auth/refresh-token`,
+    `/auth/refresh-token`,
     {
       method: "POST",
       headers: {

@@ -7,14 +7,13 @@ export interface Property {
   location: string
   price: number
   bedrooms: number
+  bathrooms: number
+  area?: number | null
   thumbnail: string
   images: string[]
-  bathrooms: number
-  rating: number
+  rating?: number | null
   amenities: string[]
-  reviews: string[]
-  featured: boolean
-  area?: number | null
+  isFeatured: boolean
   status: PropertyStatus
   landlordId: string
   categoryId: string

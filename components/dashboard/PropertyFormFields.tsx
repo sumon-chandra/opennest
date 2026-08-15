@@ -473,12 +473,12 @@ export function PropertyFormFields() {
         >
           <div className="grid grid-cols-2 gap-2.5">
             {AMENITIES.map((amenity) => {
-              const isSelected = selectedAmenities.includes(amenity.id)
+              const isSelected = selectedAmenities.includes(amenity.name)
               return (
                 <button
                   key={amenity.id}
                   type="button"
-                  onClick={() => toggleAmenity(amenity.id)}
+                  onClick={() => toggleAmenity(amenity.name)}
                   className={`flex cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 text-left text-xs transition-all ${
                     isSelected
                       ? "border-primary bg-primary/10 text-primary"
