@@ -25,6 +25,7 @@ export async function getCategories(): Promise<ApiResponse<Category[]>> {
     const result = (await res.json()) as ApiResponse<Category[]>
     return result
   } catch (error: any) {
+    console.error("[getCategories] Error:", error)
     return {
       success: false,
       statusCode: 500,

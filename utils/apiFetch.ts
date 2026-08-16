@@ -6,35 +6,27 @@ export async function apiFetch(
   const urls = envUrls.split(",").map(u => u.trim().replace(/\/$/, ""));
   const path = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
 
-  // Race all URLs in parallel — first successful response wins.
-  // This avoids sequential timeouts (3 × 8s = 24s) that exceed Vercel's 10s limit.
-  const racePromises = urls.map(async (baseUrl) => {
-    const url = baseUrl + path;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s per attempt
+  let lastError: any = null;
 
+  for (const baseUrl of urls) {
+    const url = baseUrl + path;
     try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 3000); // 3s timeout to stay within Vercel's 10s limit
+
       const response = await fetch(url, {
         ...init,
         signal: init?.signal || controller.signal,
       });
-      clearTimeout(timeoutId);
+      clearTimeout(id);
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} from ${baseUrl}`);
-      }
       return response;
     } catch (error) {
-      clearTimeout(timeoutId);
       console.warn("[apiFetch] Failed fetching from " + baseUrl + ": " + (error instanceof Error ? error.message : "Timeout/Unknown"));
-      throw error;
+      lastError = error;
     }
-  });
-
-  try {
-    // Promise.any resolves with the first fulfilled promise
-    return await Promise.any(racePromises);
-  } catch (aggregateError) {
-    throw new Error("All backend API URLs failed to respond.");
   }
+
+  throw lastError || new Error("All backend API URLs failed to respond.");
 }
+

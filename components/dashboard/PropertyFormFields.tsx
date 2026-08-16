@@ -104,13 +104,34 @@ export function PropertyFormFields() {
     loc.toLowerCase().includes(locationSearch.toLowerCase()),
   )
 
-  // Fetch categories for the dropdown
-  const { data: categoriesResult, isLoading: isCategoriesLoading, error } = useQuery({
+  // Fetch categories directly from client — avoids server action overhead
+  interface Category {
+    id: string
+    name: string
+    icon?: string
+  }
+  interface CategoriesResponse {
+    data: Category[]
+  }
+  const { data: categoriesResult, isLoading: isCategoriesLoading, error } = useQuery<CategoriesResponse>({
     queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryFn: async () => {
+      const urls = [
+        "https://rentnestapi2.vercel.app/api/v1/categories",
+        "https://rentnestapi3.vercel.app/api/v1/categories",
+        "https://rentnestapi4.vercel.app/api/v1/categories",
+      ]
+      for (const url of urls) {
+        try {
+          const res = await fetch(url)
+          if (res.ok) return await res.json() as CategoriesResponse
+        } catch { /* try next */ }
+      }
+      throw new Error("All backend API URLs failed")
+    },
     staleTime: 1000 * 60 * 60,
   })
-  const categories = categoriesResult?.data ?? []
+  const categories: Category[] = categoriesResult?.data ?? []
   console.log({categoriesResult, error})
 
   const toggleAmenity = (amenityId: string) => {
