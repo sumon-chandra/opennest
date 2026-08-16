@@ -32,7 +32,7 @@ export default function CreatePropertyPage() {
       amenities: [],
       status: "AVAILABLE",
       categoryId: "",
-      featured: false,
+      isFeatured: false,
     },
   })
 
@@ -53,7 +53,7 @@ export default function CreatePropertyPage() {
     if (values.area) formData.append("area", values.area.toString())
     formData.append("status", values.status)
     formData.append("categoryId", values.categoryId)
-    formData.append("featured", values.featured.toString())
+    formData.append("isFeatured", values.isFeatured.toString())
 
     // Arrays
     values.amenities.forEach((a) => formData.append("amenities", a))

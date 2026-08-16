@@ -49,3 +49,36 @@ export async function uploadFileToCloudinary(
     uploadStream.end(optimizedBuffer)
   })
 }
+
+/**
+ * Extracts the public_id from a Cloudinary URL and deletes it.
+ */
+export async function deleteFileFromCloudinary(url: string): Promise<boolean> {
+  if (!url || !url.includes("cloudinary.com")) return false
+
+  try {
+    // URL example: https://res.cloudinary.com/cloud_name/image/upload/v12345/folder/file.webp
+    // We need 'folder/file' (without extension and without the version/domain stuff)
+    const urlParts = url.split("/")
+    const uploadIndex = urlParts.findIndex((part) => part === "upload")
+    
+    if (uploadIndex === -1) return false
+
+    // Get everything after "upload/v[version]/"
+    // Sometimes there is no version, so we handle both cases
+    const pathParts = urlParts.slice(uploadIndex + 1)
+    if (pathParts[0].startsWith("v") && !isNaN(parseInt(pathParts[0].replace("v", ""), 10))) {
+      pathParts.shift() // Remove version
+    }
+
+    const fullPath = pathParts.join("/")
+    // Remove extension
+    const publicId = fullPath.substring(0, fullPath.lastIndexOf(".")) || fullPath
+
+    const result = await cloudinary.uploader.destroy(publicId)
+    return result.result === "ok"
+  } catch (error) {
+    console.error("Cloudinary deletion error:", error)
+    return false
+  }
+}

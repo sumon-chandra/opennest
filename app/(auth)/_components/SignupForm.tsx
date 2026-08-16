@@ -65,8 +65,6 @@ export function SignupForm() {
         phone: data.phone ?? undefined,
       })
 
-      console.log({ newUser })
-
       if (newUser.success) {
         form.reset()
         // Handle redirect if provided

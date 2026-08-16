@@ -76,8 +76,6 @@ export async function createProperty(
 
     const result = (await res.json()) as ApiResponse<Property>
 
-    console.log("Server Action result : ", result)
-
     if (result.success) {
       revalidateTag("my-properties", "max")
       revalidateTag("properties", "max")

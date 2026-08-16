@@ -2,10 +2,10 @@
 import { apiFetch } from "../../../../utils/apiFetch";
 
 import { ApiResponse } from "@/types"
-import { Property } from "@/types/property"
+import { PropertyResponse } from "@/types/property"
 import { cookies } from "next/headers"
 
-export async function getMyProperties(): Promise<ApiResponse<Property[]>> {
+export async function getMyProperties(): Promise<ApiResponse<PropertyResponse[]>> {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
@@ -22,7 +22,7 @@ export async function getMyProperties(): Promise<ApiResponse<Property[]>> {
     `properties/my-properties`,
     {
       headers: {
-        Cookie: `accessToken=${accessToken}`,
+        Authorization: accessToken
       },
       cache: "no-store",
       next: {
@@ -31,6 +31,6 @@ export async function getMyProperties(): Promise<ApiResponse<Property[]>> {
     },
   )
 
-  const result = (await res.json()) as ApiResponse<Property[]>
+  const result = (await res.json()) as ApiResponse<PropertyResponse[]>
   return result
 }

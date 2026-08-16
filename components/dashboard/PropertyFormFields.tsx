@@ -432,7 +432,6 @@ export function PropertyFormFields() {
                   id="bathrooms"
                   type="number"
                   min={0}
-                  step={0.5}
                   {...register("bathrooms", { valueAsNumber: true })}
                   placeholder="2"
                   className={`${inputClass} pl-8`}
@@ -500,7 +499,7 @@ export function PropertyFormFields() {
           <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border px-4 py-3.5 transition-all hover:border-primary/40">
             <input
               type="checkbox"
-              {...register("featured")}
+              {...register("isFeatured")}
               className="mt-0.5 accent-primary"
             />
             <div>

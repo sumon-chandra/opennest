@@ -14,13 +14,34 @@ import {
   AlertTriangle,
   X,
   Loader2,
+  MoreHorizontal,
+  Eye,
+  Link as LinkIcon,
 } from "lucide-react"
-import { Property } from "@/types/property"
+import { PropertyResponse } from "@/types/property"
 import { deleteProperty } from "@/app/dashboard/landlord/_actions/delete-property"
 import { toast } from "sonner"
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 
 interface LandlordPropertiesTableProps {
-  properties: Property[]
+  properties: PropertyResponse[]
   onDeleted?: (id: string) => void
 }
 
@@ -37,7 +58,7 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 interface DeleteDialogProps {
-  property: Property
+  property: PropertyResponse
   onConfirm: () => void
   onCancel: () => void
   isPending: boolean
@@ -110,10 +131,11 @@ export function LandlordPropertiesTable({
   onDeleted,
 }: LandlordPropertiesTableProps) {
   const [properties, setProperties] = useState(initialProperties)
-  const [deleteTarget, setDeleteTarget] = useState<Property | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<PropertyResponse | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const handleDelete = (property: Property) => {
+
+  const handleDelete = (property: PropertyResponse) => {
     setDeleteTarget(property)
   }
 
@@ -132,6 +154,12 @@ export function LandlordPropertiesTable({
       setDeleteTarget(null)
     })
   }
+
+  const handleCopyLink = (id: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/properties/${id}`)
+    toast.success("Property link copied to clipboard")
+  }
+
 
   if (properties.length === 0) {
     return (
@@ -164,132 +192,151 @@ export function LandlordPropertiesTable({
     <>
       {/* Desktop Table */}
       <div className="hidden overflow-hidden rounded-xl border border-border bg-card md:block">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-secondary/60">
-                <th className="px-5 py-3.5 text-left font-semibold text-foreground">
-                  Property
-                </th>
-                <th className="px-5 py-3.5 text-left font-semibold text-foreground">
-                  Price
-                </th>
-                <th className="px-5 py-3.5 text-left font-semibold text-foreground">
-                  Details
-                </th>
-                <th className="px-5 py-3.5 text-left font-semibold text-foreground">
-                  Status
-                </th>
-                <th className="px-5 py-3.5 text-left font-semibold text-foreground">
-                  Rating
-                </th>
-                <th className="px-5 py-3.5 text-right font-semibold text-foreground">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence>
-                {properties.map((prop, idx) => (
-                  <motion.tr
-                    key={prop.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10, height: 0 }}
-                    transition={{ delay: idx * 0.04 }}
-                    className="border-b border-border transition-colors last:border-0 hover:bg-secondary/30"
-                  >
-                    {/* Property Info */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-muted">
-                          <Image
-                            src={prop.thumbnail}
-                            alt={prop.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground line-clamp-1">
-                            {prop.title}
-                          </p>
-                          <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin size={11} />
-                            {prop.location}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Price */}
-                    <td className="px-5 py-4">
-                      <span className="font-semibold text-foreground">
-                        ${prop.price.toLocaleString()}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {" "}
-                        /night
-                      </span>
-                    </td>
-
-                    {/* Details */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Bed size={13} />
-                          {prop.bedrooms}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Bath size={13} />
-                          {prop.bathrooms}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-5 py-4">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}
-                      >
-                        <span className="mr-1.5 size-1.5 rounded-full bg-current" />
-                        {STATUS_LABELS[prop.status]}
-                      </span>
-                    </td>
-
-                    {/* Rating */}
-                    <td className="px-5 py-4">
-                      <span className="flex items-center gap-1 font-medium text-yellow-500">
-                        <Star size={14} className="fill-yellow-400" />
-                        {prop.rating ? prop.rating.toFixed(1) : "N/A"}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-5 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/dashboard/landlord/properties/${prop.id}/edit`}
-                          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                        >
-                          <Edit3 size={13} />
-                          Edit
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-secondary/60 hover:bg-secondary/60">
+              <TableHead className="px-5 py-3.5">Property</TableHead>
+              <TableHead className="px-5 py-3.5">Price</TableHead>
+              <TableHead className="px-5 py-3.5">Details</TableHead>
+              <TableHead className="px-5 py-3.5">Status</TableHead>
+              <TableHead className="px-5 py-3.5">Rating</TableHead>
+              <TableHead className="px-5 py-3.5 text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AnimatePresence>
+              {properties.map((prop, idx) => (
+                <motion.tr
+                  key={prop.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10, height: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  className="border-b border-border transition-colors last:border-0 hover:bg-muted/50"
+                >
+                  {/* Property Info */}
+                  <TableCell className="px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+                        <Link href={`/properties/${prop.id}`}>
+                        <Image
+                          src={prop.thumbnail ||prop.images[0] || "https://placehold.co/600x400/EEE/31343C.png?text=Property+Image+Unavailable"}
+                          alt={prop.title}
+                          width={100}
+                          height={100}
+                          className="object-center object-fill"
+                        />
                         </Link>
-                        <button
-                          onClick={() => handleDelete(prop)}
-                          className="flex items-center gap-1.5 rounded-lg border border-destructive/30 px-3 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
-                        >
-                          <Trash2 size={13} />
-                          Delete
-                        </button>
                       </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
+                      <div>
+                        <p className="font-semibold text-foreground line-clamp-1">
+                          <Link href={`/properties/${prop.id}`} className="hover:text-muted-foreground/80 ">
+                            {prop.title}
+                          </Link>
+                        </p>
+                        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <MapPin size={11} />
+                          {prop.location}
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  {/* Price */}
+                  <TableCell className="px-5 py-4">
+                    <span className="font-semibold text-foreground">
+                      ${prop.price.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {" "}
+                      /month
+                    </span>
+                  </TableCell>
+
+                  {/* Details */}
+                  <TableCell className="px-5 py-4">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Bed size={13} />
+                        {prop.bedrooms}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Bath size={13} />
+                        {prop.bathrooms}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  {/* Status */}
+                  <TableCell className="px-5 py-4">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}
+                    >
+                      <span className="mr-1.5 size-1.5 rounded-full bg-current" />
+                      {STATUS_LABELS[prop.status]}
+                    </span>
+                  </TableCell>
+
+                  {/* Rating */}
+                  <TableCell className="px-5 py-4">
+                    <span className="flex items-center gap-1 font-medium text-yellow-500">
+                      <Star size={14} className="fill-yellow-400" />
+                      {prop.rating ? prop.rating.toFixed(1) : "N/A"}
+                    </span>
+                  </TableCell>
+
+                  {/* Actions Dropdown */}
+                  <TableCell className="px-5 py-4 text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button variant="ghost" size="icon" className="size-8">
+                            <MoreHorizontal size={16} />
+                            <span className="sr-only">Actions</span>
+                          </Button>
+                        }
+                      />
+                      <DropdownMenuContent align="end" sideOffset={5} >
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            render={
+                              <Link href={`/properties/${prop.id}`}>
+                                <Eye size={14} />
+                                View Property
+                              </Link>
+                            }
+                          />
+                          <DropdownMenuItem
+                            render={
+                              <Link href={`/dashboard/landlord/properties/${prop.id}/edit`}>
+                                <Edit3 size={14} />
+                                Edit Property
+                              </Link>
+                            }
+                          />
+                        </DropdownMenuGroup>
+                        <DropdownMenuItem
+                          onClick={() => handleCopyLink(prop.id)}
+                        >
+                          <LinkIcon size={14} />
+                          Copy Link
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => handleDelete(prop)}
+                        >
+                          <Trash2 size={14} />
+                          Delete Property
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
+          </TableBody>
+        </Table>
       </div>
 
       {/* Mobile Cards */}
@@ -307,9 +354,10 @@ export function LandlordPropertiesTable({
               <div className="flex gap-3 p-4">
                 <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
                   <Image
-                    src={prop.thumbnail}
+                    src={prop.thumbnail ||prop.images[0] || "https://placehold.co/600x400/EEE/31343C.png?text=Property+Image+Unavailable"}
                     alt={prop.title}
-                    fill
+                    width={64}
+                    height={64}
                     className="object-cover"
                   />
                 </div>
@@ -336,21 +384,48 @@ export function LandlordPropertiesTable({
                     </span>
                   </div>
                 </div>
-              </div>
-              <div className="flex border-t border-border">
-                <Link
-                  href={`/dashboard/landlord/properties/${prop.id}/edit`}
-                  className="flex flex-1 items-center justify-center gap-2 py-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  <Edit3 size={13} /> Edit
-                </Link>
-                <div className="w-px bg-border" />
-                <button
-                  onClick={() => handleDelete(prop)}
-                  className="flex flex-1 items-center justify-center gap-2 py-2.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/10"
-                >
-                  <Trash2 size={13} /> Delete
-                </button>
+                {/* Mobile dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="ghost" size="icon" className="size-8 shrink-0">
+                        <MoreHorizontal size={16} />
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent align="end" sideOffset={8}>
+                    <DropdownMenuItem
+                      render={
+                        <Link href={`/properties/${prop.id}`}>
+                          <Eye size={14} />
+                          View
+                        </Link>
+                      }
+                    />
+                    <DropdownMenuItem
+                      render={
+                        <Link href={`/dashboard/landlord/properties/${prop.id}/edit`}>
+                          <Edit3 size={14} />
+                          Edit
+                        </Link>
+                      }
+                    />
+                    <DropdownMenuItem
+                      onClick={() => handleCopyLink(prop.id)}
+                    >
+                      <LinkIcon size={14} />
+                      Copy Link
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => handleDelete(prop)}
+                    >
+                      <Trash2 size={14} />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </motion.div>
           ))}

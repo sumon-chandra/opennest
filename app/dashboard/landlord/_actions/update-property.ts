@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types"
 import { Property } from "@/types/property"
 import { cookies } from "next/headers"
 import { revalidateTag } from "next/cache"
-import { uploadFileToCloudinary } from "@/utils/cloudinary"
+import { uploadFileToCloudinary, deleteFileFromCloudinary } from "@/utils/cloudinary"
 
 export async function updateProperty(
   id: string,
@@ -24,6 +24,17 @@ export async function updateProperty(
   }
 
   try {
+    // 0. Fetch existing property to check for images to delete
+    let existingProperty: any = null
+    const existingRes = await apiFetch(`properties/${id}`, {
+      headers: { Authorization: accessToken },
+      cache: "no-store",
+    })
+    if (existingRes.ok) {
+      const data = await existingRes.json()
+      existingProperty = data.data
+    }
+
     // 1. Handle Thumbnail
     const thumbnailData = formData.get("thumbnail")
     let thumbnailUrl = ""
@@ -47,6 +58,22 @@ export async function updateProperty(
       }),
     )
 
+    // 2.5 Delete removed images from Cloudinary
+    if (existingProperty) {
+      if (thumbnailUrl && thumbnailUrl !== existingProperty.thumbnail) {
+        await deleteFileFromCloudinary(existingProperty.thumbnail)
+      }
+
+      if (existingProperty.images && Array.isArray(existingProperty.images)) {
+        const imagesToDelete = existingProperty.images.filter(
+          (oldUrl: string) => !imageUrls.includes(oldUrl)
+        )
+        await Promise.all(
+          imagesToDelete.map((url: string) => deleteFileFromCloudinary(url))
+        )
+      }
+    }
+
     // 3. Assemble Payload
     const payload: Record<string, any> = {}
     
@@ -60,10 +87,11 @@ export async function updateProperty(
     if (formData.has("area")) payload.area = Number(formData.get("area"))
     if (formData.has("status")) payload.status = formData.get("status")
     if (formData.has("categoryId")) payload.categoryId = formData.get("categoryId") as string
-    if (formData.has("featured")) payload.featured = formData.get("featured") === "true"
+    if (formData.has("isFeatured")) payload.isFeatured = formData.get("isFeatured") === "true"
     
-    if (thumbnailUrl) payload.thumbnail = thumbnailUrl
-    if (imageUrls.length > 0) payload.images = imageUrls
+    // Always assign thumbnail and images if they were processed, to allow replacing or clearing
+    payload.thumbnail = thumbnailUrl
+    payload.images = imageUrls
     if (formData.has("amenities")) payload.amenities = formData.getAll("amenities") as string[]
 
     // 4. Send to backend
@@ -72,8 +100,8 @@ export async function updateProperty(
       {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
-          Cookie: `accessToken=${accessToken}`,
+           "Content-Type": "application/json",
+          Authorization: accessToken,
         },
         body: JSON.stringify(payload),
       },
