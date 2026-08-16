@@ -105,13 +105,13 @@ export function PropertyFormFields() {
   )
 
   // Fetch categories for the dropdown
-  const { data: categoriesResult, isLoading: isCategoriesLoading } = useQuery({
+  const { data: categoriesResult, isLoading: isCategoriesLoading, error } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
     staleTime: 1000 * 60 * 60,
   })
   const categories = categoriesResult?.data ?? []
-  console.log({categoriesResult})
+  console.log({categoriesResult, error})
 
   const toggleAmenity = (amenityId: string) => {
     const current = selectedAmenities
