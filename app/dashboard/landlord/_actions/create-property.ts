@@ -58,7 +58,7 @@ export async function createProperty(
       amenities: formData.getAll("amenities") as string[],
       status: formData.get("status") as "AVAILABLE" | "RENTED" | "UNAVAILABLE",
       categoryId: formData.get("categoryId") as string,
-      featured: formData.get("featured") === "true",
+      isFeatured: formData.get("isFeatured") === "true",
     }
 
     // 5. Send to backend
