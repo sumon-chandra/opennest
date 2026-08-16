@@ -37,7 +37,7 @@ export function EditPropertyForm({ property }: EditPropertyFormProps) {
       amenities: property.amenities ?? [],
       status: property.status,
       categoryId: property.categoryId,
-      featured: property.featured ?? false,
+      isFeatured: property.isFeatured,
     },
   })
 
@@ -58,7 +58,7 @@ export function EditPropertyForm({ property }: EditPropertyFormProps) {
     if (values.area) formData.append("area", values.area.toString())
     formData.append("status", values.status)
     formData.append("categoryId", values.categoryId)
-    formData.append("featured", values.featured.toString())
+    formData.append("isFeatured", values.isFeatured.toString())
 
     // Arrays
     values.amenities.forEach((a) => formData.append("amenities", a))

@@ -20,8 +20,8 @@ export default function PropertiesLoading() {
 
         {/* Grid Skeleton */}
         <main className="flex-1">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
               <PropertyCardSkeleton key={i} />
             ))}
           </div>

@@ -20,7 +20,7 @@ export const propertySchema = z.object({
   status: z.enum(["AVAILABLE", "RENTED", "UNAVAILABLE"]),
   // Selected from real category list fetched from the DB
   categoryId: z.string().min(1, "Please select a category"),
-  featured: z.boolean().default(false),
+  isFeatured: z.boolean().default(false),
 })
 
 export type PropertyFormValues = z.infer<typeof propertySchema>
