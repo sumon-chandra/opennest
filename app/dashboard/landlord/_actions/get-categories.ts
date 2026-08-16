@@ -8,11 +8,7 @@ export async function getCategories(): Promise<ApiResponse<Category[]>> {
   const res = await apiFetch(
     `categories`,
     {
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 * 24, // 24h — categories rarely change
-        tags: ["categories"],
-      },
+      cache: "no-store",
     },
   )
 
