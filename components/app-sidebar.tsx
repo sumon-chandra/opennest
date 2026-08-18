@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -16,139 +17,146 @@ import {
 } from "@/components/ui/sidebar"
 import {
   LayoutDashboardIcon,
-  ListIcon,
-  ChartBarIcon,
-  FolderIcon,
-  UsersIcon,
-  CameraIcon,
-  FileTextIcon,
+  BuildingIcon,
+  InboxIcon,
+  CreditCardIcon,
+  BarChartIcon,
   Settings2Icon,
-  CircleHelpIcon,
-  SearchIcon,
+  MoonIcon,
+  HomeIcon,
   CommandIcon,
+  ShieldAlertIcon,
+  UsersIcon,
+  StarIcon
 } from "lucide-react"
+import Link from "next/link"
 
-const data = {
+const baseData = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: <ListIcon />,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: <ChartBarIcon />,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: <FolderIcon />,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: <UsersIcon />,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: <CameraIcon />,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: <FileTextIcon />,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: <FileTextIcon />,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/settings",
       icon: <Settings2Icon />,
     },
     {
-      title: "Get Help",
+      title: "Theme",
       url: "#",
-      icon: <CircleHelpIcon />,
+      icon: <MoonIcon />,
     },
     {
-      title: "Search",
-      url: "#",
-      icon: <SearchIcon />,
+      title: "Home Page",
+      url: "/",
+      icon: <HomeIcon />,
     },
   ],
 }
+
+const landlordNav = [
+  {
+    title: "Dashboard Overview",
+    url: "/dashboard/landlord",
+    icon: <LayoutDashboardIcon />,
+  },
+  {
+    title: "My Properties",
+    url: "/dashboard/landlord/properties",
+    icon: <BuildingIcon />,
+  },
+  {
+    title: "Requests & Bookings",
+    url: "/dashboard/landlord/requests",
+    icon: <InboxIcon />,
+  },
+  {
+    title: "Payment History",
+    url: "/dashboard/landlord/payments",
+    icon: <CreditCardIcon />,
+  },
+  {
+    title: "Reporting",
+    url: "/dashboard/landlord/reporting",
+    icon: <BarChartIcon />,
+  },
+]
+
+const tenantNav = [
+  {
+    title: "Rental Requests",
+    url: "/dashboard/tenant/requests",
+    icon: <InboxIcon />,
+  },
+  {
+    title: "Payment History",
+    url: "/dashboard/tenant/payments",
+    icon: <CreditCardIcon />,
+  },
+  {
+    title: "Reviews",
+    url: "/dashboard/tenant/reviews",
+    icon: <StarIcon />,
+  },
+]
+
+const adminNav = [
+  {
+    title: "Overview",
+    url: "/dashboard/admin",
+    icon: <LayoutDashboardIcon />,
+  },
+  {
+    title: "Users Management",
+    url: "/dashboard/admin/users",
+    icon: <UsersIcon />,
+  },
+  {
+    title: "Content Moderation",
+    url: "/dashboard/admin/moderation",
+    icon: <ShieldAlertIcon />,
+  },
+]
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname()
+
+  let currentNav = landlordNav // Default
+  if (pathname.includes("/dashboard/tenant")) {
+    currentNav = tenantNav
+  } else if (pathname.includes("/dashboard/admin")) {
+    currentNav = adminNav
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props} className="bg-background">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
+              size="lg"
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<a href="#" />}
+              render={<Link href="/" />}
             >
-              <CommandIcon className="size-5!" />
-              <span className="text-base font-semibold">Acme Inc.</span>
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <CommandIcon className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">OpenNest</span>
+                <span className="truncate text-xs">Rental Management</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={currentNav} />
+        <NavSecondary items={baseData.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={baseData.user} />
       </SidebarFooter>
     </Sidebar>
   )
