@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import Link from "next/link"
 
 // Mock Data
 const myRequests = [
@@ -58,7 +59,9 @@ export default function TenantRequests() {
             Track the status of your property rental applications.
           </p>
         </div>
-        <Button>Find More Properties</Button>
+        <Button>
+          <Link href="/properties">Find More Properties</Link>
+        </Button>
       </motion.div>
 
       <div className="flex items-center gap-2 max-w-sm">

@@ -132,7 +132,6 @@ export function PropertyFormFields() {
     staleTime: 1000 * 60 * 60,
   })
   const categories: Category[] = categoriesResult?.data ?? []
-  console.log({categoriesResult, error})
 
   const toggleAmenity = (amenityId: string) => {
     const current = selectedAmenities

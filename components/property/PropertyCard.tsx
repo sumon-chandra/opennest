@@ -4,7 +4,8 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Star, MapPin, Bed, Bath, Heart } from "lucide-react"
 
-import { useFavorite } from "@/hooks/useFavorite"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getFavoriteProperties, addFavoriteProperty, removeFavoriteProperties } from "@/app/dashboard/tenant/_actions/properties"
 import { PropertyResponse } from "@/types/property"
 import Image from "next/image"
 
@@ -14,15 +15,38 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
-  const { isFavorite, addFavorite, removeFavorite } = useFavorite()
-  const liked = isFavorite(property.id)
+  const queryClient = useQueryClient()
+
+  const { data: favoritesRes } = useQuery({
+    queryKey: ["favorite-properties"],
+    queryFn: () => getFavoriteProperties(),
+    staleTime: 5 * 1000 * 60,
+    gcTime: 10 * 1000 * 60,
+  })
+
+  const favoriteRecord = favoritesRes?.data?.find((f: any) => f.propertyId === property.id || f.id === property.id)
+  const liked = !!favoriteRecord
+
+  const addFavoriteMutation = useMutation({
+    mutationFn: (id: string) => addFavoriteProperty(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorite-properties"] })
+    }
+  })
+
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (id: string) => removeFavoriteProperties(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorite-properties"] })
+    }
+  })
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault()
-    if (liked) {
-      removeFavorite(property.id)
+    if (liked && favoriteRecord) {
+      removeFavoriteMutation.mutate(favoriteRecord.id)
     } else {
-      addFavorite(property.id)
+      addFavoriteMutation.mutate(property.id)
     }
   }
 

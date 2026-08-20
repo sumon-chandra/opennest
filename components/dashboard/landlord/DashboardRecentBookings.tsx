@@ -2,6 +2,7 @@
 
 import { RecentBooking } from "@/types/property"
 import { motion } from "framer-motion"
+import PropertyNotFound from "../PropertyNotFound"
 
 export default function DashboardRecentBookings({
   recentBookings
@@ -20,13 +21,7 @@ export default function DashboardRecentBookings({
       </h2>
       <div className="space-y-3">
         {recentBookings.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card py-12 text-center"
-          >
-            <p className="text-muted-foreground text-sm">No recent bookings found.</p>
-          </motion.div>
+          <PropertyNotFound title="No recent bookings found." description="Be the first to get a booking!" />
         ) : (
           recentBookings.map((booking, idx) => (
             <motion.div

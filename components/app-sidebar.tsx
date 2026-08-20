@@ -87,6 +87,11 @@ const landlordNav = [
 
 const tenantNav = [
   {
+    title: "Dashboard Overview",
+    url: "/dashboard/tenant",
+    icon: <LayoutDashboardIcon />,
+  },
+  {
     title: "Rental Requests",
     url: "/dashboard/tenant/requests",
     icon: <InboxIcon />,
@@ -97,7 +102,7 @@ const tenantNav = [
     icon: <CreditCardIcon />,
   },
   {
-    title: "Reviews",
+    title: "My Reviews",
     url: "/dashboard/tenant/reviews",
     icon: <StarIcon />,
   },

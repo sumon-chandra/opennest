@@ -1,11 +1,10 @@
 "use client"
 
-import { useFavorite } from "@/hooks/useFavorite"
+import { FavoriteProperties } from "@/components/dashboard/tenant/FavoriteProperties"
 import { motion } from "framer-motion"
 import { Calendar, MapPin, Star, Heart } from "lucide-react"
 
 export default function TenantDashboard() {
-  const { favorites } = useFavorite()
 
   const stats = [
     { label: "Active Bookings", value: "3", icon: Calendar },
@@ -13,7 +12,7 @@ export default function TenantDashboard() {
     { label: "Average Rating", value: "4.8", icon: Star },
     {
       label: "Saved Properties",
-      value: favorites.length.toString(),
+      value: 10,
       icon: Heart,
     },
   ]
@@ -49,7 +48,7 @@ export default function TenantDashboard() {
   ]
 
   return (
-    <div className="">
+    <div className="space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -156,18 +155,7 @@ export default function TenantDashboard() {
       </motion.div>
 
       {/* Saved Properties Section */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="py-12 text-center"
-      >
-        <Heart size={48} className="mx-auto mb-4 text-muted-foreground" />
-        <p className="text-lg text-muted-foreground">No saved properties yet</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Start exploring and save your favorite properties
-        </p>
-      </motion.div>
+     <FavoriteProperties />
     </div>
   )
 }
