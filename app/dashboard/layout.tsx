@@ -1,14 +1,13 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
+import { AppSidebar, SidebarUser } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { getAuthUser } from "@/services/auth-service"
 
-import data from "./data.json"
 import React from "react"
 
-export default function Page({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { data:user } = await getAuthUser()
+
   return (
     <SidebarProvider
       style={
@@ -18,17 +17,12 @@ export default function Page({ children }: { children: React.ReactNode }) {
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <AppSidebar variant="sidebar" user={user as SidebarUser} />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="container flex flex-col gap-4 space-y-8 py-4 md:ml-4 md:gap-6 md:py-6">
-              {/* <SectionCards />
-              <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
-              </div>
-              <DataTable data={data} /> */}
+            <div className="container flex flex-col gap-4 space-y-8 p-4">
               {children}
             </div>
           </div>

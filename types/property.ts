@@ -1,4 +1,4 @@
-import { PropertyStatus } from "."
+import { PaymentStatus, PropertyStatus } from "."
 
 export interface Property {
   id: string
@@ -24,14 +24,46 @@ export interface Property {
 export interface PropertyResponse extends Property {
   category: PropertyCategory;
   landlord: PropertyLandlord;
+  revenue: number;
   _count: {
     reviews: number;
-  favoriteProperties: number;
+    favoriteProperties: number;
+    rentalRequests: number;
   };
 }
+
 export interface PropertyCategory {
   id: string;
   name: string;
+}
+
+export interface PropertyMeta {
+  totalRevenue: number;
+  activeProperties: number;
+  totalBookingsThisMonth: number;
+  recentBookings?: RecentBooking[];
+}
+
+export interface RecentBooking {
+    property: {
+        id: string;
+        title: string;
+        location: string;
+        price: number;
+        thumbnail: string | null;
+        status: PropertyStatus;
+    };
+    tenant: {
+        name: string;
+        email: string;
+        avatar: string | null;
+    };
+    payment: {
+        status: PaymentStatus;
+        amount: number;
+        createdAt: string;
+        paidAt: string | null;
+    } | null;
 }
 
 export interface PropertyLandlord {

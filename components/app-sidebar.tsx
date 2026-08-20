@@ -31,12 +31,13 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
+export interface SidebarUser {
+  name: string
+  email: string
+  avatar: string
+}
+
 const baseData = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navSecondary: [
     {
       title: "Settings",
@@ -120,10 +121,10 @@ const adminNav = [
   },
 ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar> & { user: SidebarUser }) {
   const pathname = usePathname()
 
-  let currentNav = landlordNav // Default
+  let currentNav = landlordNav 
   if (pathname.includes("/dashboard/tenant")) {
     currentNav = tenantNav
   } else if (pathname.includes("/dashboard/admin")) {
@@ -156,7 +157,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={baseData.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={baseData.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )
