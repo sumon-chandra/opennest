@@ -5,11 +5,10 @@ import { motion } from "framer-motion"
 import PropertyNotFound from "../PropertyNotFound"
 
 export default function DashboardRecentBookings({
-  recentBookings
+  recentBookings,
 }: {
   recentBookings: RecentBooking[]
 }) {
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -21,7 +20,10 @@ export default function DashboardRecentBookings({
       </h2>
       <div className="space-y-3">
         {recentBookings.length === 0 ? (
-          <PropertyNotFound title="No recent bookings found." description="Be the first to get a booking!" />
+          <PropertyNotFound
+            title="No recent bookings found."
+            description="Be the first to get a booking!"
+          />
         ) : (
           recentBookings.map((booking, idx) => (
             <motion.div
@@ -32,7 +34,9 @@ export default function DashboardRecentBookings({
               className="flex items-center justify-between rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-lg"
             >
               <div>
-                <p className="font-semibold text-foreground">{booking.tenant.name}</p>
+                <p className="font-semibold text-foreground">
+                  {booking.tenant.name}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {booking.property.title}
                 </p>
@@ -43,11 +47,11 @@ export default function DashboardRecentBookings({
                 </p>
                 <span
                   className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                    booking.payment?.status === "PAID"
+                    booking.payment?.status === "COMPLETED"
                       ? "bg-green-500/20 text-green-600"
                       : booking.payment?.status === "PENDING"
-                      ? "bg-yellow-500/20 text-yellow-600"
-                      : "bg-red-500/20 text-red-600"
+                        ? "bg-yellow-500/20 text-yellow-600"
+                        : "bg-red-500/20 text-red-600"
                   }`}
                 >
                   {booking.payment?.status}

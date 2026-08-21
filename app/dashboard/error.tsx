@@ -22,37 +22,33 @@ export default function DashboardError({
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">
         <AlertCircle className="h-10 w-10 text-destructive" />
       </div>
-      
+
       <div className="flex flex-col gap-2">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Something went wrong!
         </h2>
         <p className="mx-auto max-w-[500px] text-muted-foreground">
-          An unexpected error occurred while loading this page. Our team has been notified. 
-          Please try again or return to your dashboard.
+          An unexpected error occurred while loading this page. Our team has
+          been notified. Please try again or return to your dashboard.
         </p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button 
-          onClick={() => reset()} 
-          size="lg"
-          className="gap-2"
-        >
+        <Button onClick={() => reset()} size="lg" className="gap-2">
           <RefreshCw className="h-4 w-4" />
           Try again
         </Button>
-        <Button 
-          variant="outline" 
-          size="lg" 
-          render={<Link href="/dashboard/landlord" />}
+        <Button
+          variant="outline"
+          size="lg"
+          render={<Link href="/dashboard" />}
           className="gap-2"
         >
           <Home className="h-4 w-4" />
           Back to Dashboard
         </Button>
       </div>
-      
+
       {/* Optional: Show digest in development/staging for easier debugging */}
       {error.digest && (
         <p className="mt-8 text-xs text-muted-foreground">

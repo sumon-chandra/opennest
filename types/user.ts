@@ -1,4 +1,4 @@
-import { Role, UserStatus } from "."
+import { PaymentStatus, RentalRequestStatus, Role, UserStatus } from "."
 export interface User {
   id: string
   name: string
@@ -15,4 +15,33 @@ export interface User {
 export interface UserLoginToken {
   accessToken: string
   refreshToken: string
+}
+
+export interface TenantStats {
+    totalBooked: number;
+    totalPendingRequests: number;
+    totalSavedProperties: number;
+    totalInvestedAmount: number;
+    latestRentalRequests: LatestTenantRentalRequest[]
+}
+
+export interface LatestTenantRentalRequest {
+        paymentStatus: PaymentStatus;
+        property: {
+            title: string;
+            location: string;
+            price: number;
+        };
+        payment: {
+            id: string;
+            status: PaymentStatus;
+        } | null;
+        id: string;
+        status: RentalRequestStatus;
+        createdAt: string;
+        updatedAt: string;
+        tenantId: string;
+        propertyId: string;
+        moveInDate: string;
+        message: string | null;
 }
