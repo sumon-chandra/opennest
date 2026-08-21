@@ -27,7 +27,7 @@ import {
   CommandIcon,
   ShieldAlertIcon,
   UsersIcon,
-  StarIcon
+  StarIcon,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -126,10 +126,13 @@ const adminNav = [
   },
 ]
 
-export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar> & { user: SidebarUser }) {
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: SidebarUser }) {
   const pathname = usePathname()
 
-  let currentNav = landlordNav 
+  let currentNav = landlordNav
   if (pathname.includes("/dashboard/tenant")) {
     currentNav = tenantNav
   } else if (pathname.includes("/dashboard/admin")) {

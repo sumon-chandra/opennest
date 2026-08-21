@@ -41,6 +41,7 @@ export default function DashboardError({
         <Button
           variant="outline"
           size="lg"
+          nativeButton={false}
           render={<Link href="/dashboard" />}
           className="gap-2"
         >
