@@ -11,4 +11,5 @@ export interface RentalRequest {
     paymentStatus: PaymentStatus;
     paymentId: string | null;
     moveInDate: string;
+    message?: string | null;
 }

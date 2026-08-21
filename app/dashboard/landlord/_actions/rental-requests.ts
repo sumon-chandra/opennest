@@ -60,7 +60,7 @@ export const updateRentalRequestStatus = async (
   }
 
   try {
-    const res = await apiFetch(`rental-requests/${requestId}/status`, {
+    const res = await apiFetch(`rental-requests/update-status/${requestId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

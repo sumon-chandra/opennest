@@ -14,14 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { RequestActionsModal } from "./RequestActionsModal"
 import { RentalRequest } from "@/types/requests"
 import { updateRentalRequestStatus } from "@/app/dashboard/landlord/_actions/rental-requests"
 import { toast } from "sonner"
@@ -57,6 +50,7 @@ export function LandlordRequestsClient({
       )
     } else {
       toast.error(res.message || "Failed to update status")
+      throw new Error(res.message || "Failed to update status")
     }
   }
 
@@ -126,41 +120,10 @@ export function LandlordRequestsClient({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem className="gap-2">
-                          <Mail className="h-4 w-4" /> Message
-                        </DropdownMenuItem>
-                        {request.status === "PENDING" && (
-                          <>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="cursor-pointer gap-2 text-green-600 focus:text-green-600"
-                              onClick={() =>
-                                handleUpdateStatus(request.id, "APPROVED")
-                              }
-                            >
-                              <Check className="h-4 w-4" /> Approve
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="cursor-pointer gap-2 text-destructive focus:text-destructive"
-                              onClick={() =>
-                                handleUpdateStatus(request.id, "REJECTED")
-                              }
-                            >
-                              <X className="h-4 w-4" /> Reject
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <RequestActionsModal
+                      request={request}
+                      onUpdateStatus={handleUpdateStatus}
+                    />
                   </TableCell>
                 </TableRow>
               ))

@@ -30,7 +30,7 @@ const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
   const handlePayNow = async (id: string) => {
     setLoadingId(id)
     const res = await createPaymentSession(id)
-    
+
     if (res.success && res.data) {
       // res.data is the stripe checkout URL
       window.location.href = res.data
@@ -57,10 +57,16 @@ const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
         <TableBody>
           {requests?.map((request) => (
             <TableRow key={request.id}>
-              <TableCell className="font-medium">{request.property}</TableCell>
+              <TableCell className="font-medium">
+                {request.property.title}
+              </TableCell>
               <TableCell>{request.landlord}</TableCell>
-              <TableCell>{request.dateApplied}</TableCell>
-              <TableCell>{request.moveInDate}</TableCell>
+              <TableCell>
+                {new Date(request.dateApplied).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                {new Date(request.moveInDate).toLocaleDateString()}
+              </TableCell>
               <TableCell>
                 <Badge
                   variant={
@@ -92,16 +98,17 @@ const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-2">
-                  {request.status === "APPROVED" && request.paymentStatus === "PENDING" && (
-                    <Button 
-                      variant="default" 
-                      size="sm"
-                      onClick={() => handlePayNow(request.id)}
-                      disabled={loadingId === request.id}
-                    >
-                      {loadingId === request.id ? "Processing..." : "Pay Now"}
-                    </Button>
-                  )}
+                  {request.status === "APPROVED" &&
+                    request.paymentStatus === "PENDING" && (
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handlePayNow(request.id)}
+                        disabled={loadingId === request.id}
+                      >
+                        {loadingId === request.id ? "Processing..." : "Pay Now"}
+                      </Button>
+                    )}
                   <Button variant="ghost" size="icon" title="View Details">
                     <Eye className="h-4 w-4" />
                   </Button>
