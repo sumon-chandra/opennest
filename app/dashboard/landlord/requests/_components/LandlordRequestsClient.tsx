@@ -36,9 +36,11 @@ export function LandlordRequestsClient({
   const [requests, setRequests] = useState<RentalRequest[]>(initialRequests)
   const [searchTerm, setSearchTerm] = useState("")
 
+  console.log({ requests })
+
   const filteredRequests = requests.filter(
     (r) =>
-      r.property?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.property?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       r.status.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -106,7 +108,7 @@ export function LandlordRequestsClient({
                   <TableCell>
                     <div className="font-medium">Tenant</div>
                   </TableCell>
-                  <TableCell>{request.property}</TableCell>
+                  <TableCell>{request.property.title}</TableCell>
                   <TableCell>
                     {new Date(request.moveInDate).toLocaleDateString()}
                   </TableCell>
