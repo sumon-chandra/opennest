@@ -5,6 +5,7 @@ import { MapPin, Bed, Bath, Square, Star, Heart, CheckCircle2, User, Mail, Chevr
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getProperty } from "../../_actions/get-property"
+import { RequestRentalModal } from "@/components/RequestRentalModal"
 
 export default async function PropertyDetailsPage({
   params,
@@ -176,7 +177,7 @@ export default async function PropertyDetailsPage({
               </div>
 
               <div className="space-y-3 mb-6">
-                <Button className="w-full text-lg h-12">Request to Rent</Button>
+                <RequestRentalModal propertyId={property.id} />
                 <Button variant="outline" className="w-full text-lg h-12">Schedule a Tour</Button>
               </div>
 

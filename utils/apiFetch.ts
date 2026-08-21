@@ -12,7 +12,7 @@ export async function apiFetch(
     const url = baseUrl + path;
     try {
       const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 3000); // 3s timeout to stay within Vercel's 10s limit
+      const id = setTimeout(() => controller.abort(), 15000); // 15s timeout to allow cold starts and external API calls like Stripe
 
       const response = await fetch(url, {
         ...init,

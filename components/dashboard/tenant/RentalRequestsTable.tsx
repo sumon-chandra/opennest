@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { Search, Eye, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -12,12 +14,32 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { RentalRequest } from "@/types/requests"
+import { createPaymentSession } from "@/app/dashboard/tenant/_actions/payments"
+import { toast } from "sonner"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 interface RentalRequestsTableProps {
   requests: RentalRequest[]
 }
 
 const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
+  const [loadingId, setLoadingId] = useState<string | null>(null)
+  const router = useRouter()
+
+  const handlePayNow = async (id: string) => {
+    setLoadingId(id)
+    const res = await createPaymentSession(id)
+    
+    if (res.success && res.data) {
+      // res.data is the stripe checkout URL
+      window.location.href = res.data
+    } else {
+      toast.error(res.message || "Failed to initiate payment")
+      setLoadingId(null)
+    }
+  }
+
   return (
     <div className="rounded-md border bg-card">
       <Table>
@@ -70,9 +92,14 @@ const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-2">
-                  {request.paymentStatus === "PENDING" && (
-                    <Button variant="default" size="sm">
-                      Pay Now
+                  {request.status === "APPROVED" && request.paymentStatus === "PENDING" && (
+                    <Button 
+                      variant="default" 
+                      size="sm"
+                      onClick={() => handlePayNow(request.id)}
+                      disabled={loadingId === request.id}
+                    >
+                      {loadingId === request.id ? "Processing..." : "Pay Now"}
                     </Button>
                   )}
                   <Button variant="ghost" size="icon" title="View Details">
