@@ -81,16 +81,6 @@ export function RequestRentalModal({ propertyId }: RequestRentalModalProps) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            {/* <label htmlFor="moveInDate" className="text-sm font-medium">
-              Move-in Date
-            </label>
-            <Input
-              id="moveInDate"
-              name="moveInDate"
-              type="date"
-              required
-              min={new Date().toISOString().split("T")[0]}
-            /> */}
             <DatePicker date={date} setDate={setDate} />
           </div>
           <div className="space-y-2">
