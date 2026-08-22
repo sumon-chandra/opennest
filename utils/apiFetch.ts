@@ -2,8 +2,8 @@ export async function apiFetch(
   endpoint: string,
   init?: RequestInit
 ): Promise<Response> {
-  const envUrls = "http://localhost:5000/api/v1";
-  // const envUrls = process.env.BACKEND_API_URLS || "https://newrentnest.vercel.app/api/v1,https://rentnestapi2.vercel.app/api/v1,https://rentnestapi3.vercel.app/api/v1,https://rentnestapi4.vercel.app/api/v1";
+  // const envUrls = "http://localhost:5000/api/v1";
+  const envUrls = process.env.BACKEND_API_URLS || "https://newrentnest.vercel.app/api/v1,https://rentnestapi2.vercel.app/api/v1,https://rentnestapi3.vercel.app/api/v1,https://rentnestapi4.vercel.app/api/v1";
   const urls = envUrls.split(",").map(u => u.trim().replace(/\/$/, ""));
   const path = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
 
