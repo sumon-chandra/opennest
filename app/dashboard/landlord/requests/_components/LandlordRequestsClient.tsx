@@ -29,8 +29,6 @@ export function LandlordRequestsClient({
   const [requests, setRequests] = useState<RentalRequest[]>(initialRequests)
   const [searchTerm, setSearchTerm] = useState("")
 
-  console.log({ requests })
-
   const filteredRequests = requests.filter(
     (r) =>
       r.property?.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -100,7 +98,7 @@ export function LandlordRequestsClient({
               filteredRequests.map((request) => (
                 <TableRow key={request.id}>
                   <TableCell>
-                    <div className="font-medium">Tenant</div>
+                    <div className="font-medium">{request.tenant.name}</div>
                   </TableCell>
                   <TableCell>{request.property.title}</TableCell>
                   <TableCell>

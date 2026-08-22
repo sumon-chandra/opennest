@@ -13,14 +13,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { RentalRequest } from "@/types/requests"
+import { TenantRentalRequest } from "@/types/requests"
 import { createPaymentSession } from "@/app/dashboard/tenant/_actions/payments"
 import { toast } from "sonner"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 interface RentalRequestsTableProps {
-  requests: RentalRequest[]
+  requests: TenantRentalRequest[]
 }
 
 const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
@@ -57,9 +57,7 @@ const RentalRequestsTable = ({ requests }: RentalRequestsTableProps) => {
         <TableBody>
           {requests?.map((request) => (
             <TableRow key={request.id}>
-              <TableCell className="font-medium">
-                {request.property.title}
-              </TableCell>
+              <TableCell className="font-medium">{request.property}</TableCell>
               <TableCell>{request.landlord}</TableCell>
               <TableCell>
                 {new Date(request.dateApplied).toLocaleDateString()}

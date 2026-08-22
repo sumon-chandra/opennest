@@ -1,7 +1,7 @@
 "use server"
 
 import { ApiResponse } from "@/types"
-import { RentalRequest } from "@/types/requests"
+import { RentalRequest, TenantRentalRequest } from "@/types/requests"
 import { apiFetch } from "@/utils/apiFetch"
 import { cookies } from "next/headers"
 
@@ -29,6 +29,6 @@ export const myRentalRequests = async () => {
     throw new Error("Failed to fetch rental requests")
   }
 
-  const data = (await res.json()) as ApiResponse<RentalRequest[], null>
+  const data = (await res.json()) as ApiResponse<TenantRentalRequest[], null>
   return data
 }
