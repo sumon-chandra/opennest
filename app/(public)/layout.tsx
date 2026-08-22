@@ -14,9 +14,7 @@ export default async function PublicLayout({
   return (
     <>
       <Navbar user={data} logout={logout} />
-      <div className="container mx-auto flex min-h-svh flex-col gap-6 px-4 py-6">
-        <MotionDiv>{children}</MotionDiv>
-      </div>
+      <MotionDiv className="flex min-h-svh flex-col">{children}</MotionDiv>
       <Footer />
     </>
   )
