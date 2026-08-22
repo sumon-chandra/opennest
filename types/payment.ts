@@ -1,4 +1,5 @@
 import { PaymentStatus, RentalRequestStatus } from ".";
+import { RentalRequest } from "./requests";
 
 export type PaymentProvider = "STRIPE" | "SSLCOMMERZ";
 
@@ -30,4 +31,37 @@ export interface TenantPaymentHistory extends PaymentHistory {
       location: string;
     };
   };
+}
+
+export interface LandlordPaymentHistory extends PaymentHistory {
+  rentalRequest: {
+    id: string;
+    tenantId: string;
+    propertyId: string;
+    moveInDate: string;
+    message: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    tenant: Tenant;
+    property: Property;
+  }
+}
+
+interface Tenant {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface Property {
+  title: string;
+  location: string;
+  landlord: Landlord;
+}
+
+interface Landlord {
+  id: string;
+  name: string;
+  email: string;
 }

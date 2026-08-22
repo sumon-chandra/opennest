@@ -87,6 +87,7 @@ export function LandlordRequestsClient({
           <TableHeader>
             <TableRow>
               <TableHead>Tenant</TableHead>
+              <TableHead>Message</TableHead>
               <TableHead>Property</TableHead>
               <TableHead>Move-in Date</TableHead>
               <TableHead>Status</TableHead>
@@ -100,9 +101,31 @@ export function LandlordRequestsClient({
                   <TableCell>
                     <div className="font-medium">{request.tenant.name}</div>
                   </TableCell>
-                  <TableCell>{request.property.title}</TableCell>
-                  <TableCell>
-                    {new Date(request.moveInDate).toLocaleDateString()}
+                  <TableCell title={request.message || "No Message"}>
+                    {request.message && request.message.length > 25
+                      ? request.message.slice(0, 25) + "..."
+                      : request.message || "No Message"}
+                  </TableCell>
+                  <TableCell title={request.property.title}>
+                    {request.property.title.length > 20
+                      ? request.property.title.slice(0, 20) + "..."
+                      : request.property.title}
+                  </TableCell>
+                  <TableCell
+                    title={new Date(request.moveInDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                  >
+                    {new Date(request.moveInDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </TableCell>
                   <TableCell>
                     <Badge
