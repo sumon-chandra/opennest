@@ -58,7 +58,6 @@ export function RichTextEditor({
         .rich-text-editor-wrapper .ql-toolbar.ql-snow {
           border-color: var(--color-border);
           border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-          background: var(--color-secondary);
           padding: 8px 10px;
         }
         .rich-text-editor-wrapper .ql-container.ql-snow {

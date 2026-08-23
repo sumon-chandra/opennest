@@ -16,17 +16,23 @@ type Props = {
 export default async function LandlordRequestsPage({ searchParams }: Props) {
   const resolvedParams = await searchParams
   const page = parseInt(resolvedParams.page || "1", 10)
-  const limit = parseInt(resolvedParams.limit || "10", 10)
+  const limit = parseInt(resolvedParams.limit || "15", 10)
   const search = resolvedParams.search || ""
 
-  const { data: requests, meta } = await getLandlordRentalRequests({ page, limit, search })
+  const { data: requests, meta } = await getLandlordRentalRequests({
+    page,
+    limit,
+    search,
+  })
+  const totalPages =
+    meta?.totalPages || Math.ceil((meta?.total || 0) / (meta?.limit || 15))
 
   return (
     <div className="space-y-6">
       <LandlordRequestsClient initialRequests={requests || []} />
-      
+
       {/* Pagination */}
-      {meta && meta.totalPages && meta.totalPages > 1 && (
+      {totalPages > 1 && (
         <Pagination className="pb-6">
           <PaginationContent>
             <PaginationItem>
@@ -35,7 +41,7 @@ export default async function LandlordRequestsPage({ searchParams }: Props) {
                 className={page === 1 ? "pointer-events-none opacity-50" : ""}
               />
             </PaginationItem>
-            {Array.from({ length: meta.totalPages }).map((_, i) => (
+            {Array.from({ length: totalPages }).map((_, i) => (
               <PaginationItem key={i}>
                 <PaginationLink
                   href={`?page=${i + 1}&limit=${limit}${search ? `&search=${search}` : ""}`}
@@ -47,8 +53,13 @@ export default async function LandlordRequestsPage({ searchParams }: Props) {
             ))}
             <PaginationItem>
               <PaginationNext
-                href={`?page=${Math.min(meta.totalPages, page + 1)}&limit=${limit}${search ? `&search=${search}` : ""}`}
-                className={page === meta.totalPages ? "pointer-events-none opacity-50" : ""}
+                href={`?page=${Math.min(
+                  totalPages,
+                  page + 1
+                )}&limit=${limit}${search ? `&search=${search}` : ""}`}
+                className={
+                  page === totalPages ? "pointer-events-none opacity-50" : ""
+                }
               />
             </PaginationItem>
           </PaginationContent>

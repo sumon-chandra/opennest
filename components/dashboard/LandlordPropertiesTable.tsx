@@ -295,15 +295,30 @@ export function LandlordPropertiesTable({
                   </TableCell>
 
                   <TableCell className="px-5 py-4">
-                    <button
-                      onClick={() => handleToggleStatus(prop)}
-                      disabled={isPending || prop.status === "RENTED"}
-                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed ${STATUS_STYLES[prop.status]}`}
-                      title={prop.status !== "RENTED" ? "Click to toggle status" : "Cannot toggle rented property"}
-                    >
-                      <span className="mr-1.5 size-1.5 rounded-full bg-current" />
-                      {STATUS_LABELS[prop.status]}
-                    </button>
+                    {prop.status === "RENTED" ? (
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}>
+                        <span className="mr-1.5 size-1.5 rounded-full bg-current" />
+                        Rented
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={prop.status === "AVAILABLE"}
+                          onClick={() => handleToggleStatus(prop)}
+                          disabled={isPending}
+                          className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${prop.status === "AVAILABLE" ? "bg-primary" : "bg-muted-foreground/30"}`}
+                        >
+                          <span
+                            className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${prop.status === "AVAILABLE" ? "translate-x-4" : "translate-x-0"}`}
+                          />
+                        </button>
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {prop.status === "AVAILABLE" ? "Available" : "Unavailable"}
+                        </span>
+                      </div>
+                    )}
                   </TableCell>
 
                   {/* Rating */}
@@ -399,13 +414,29 @@ export function LandlordPropertiesTable({
                     {prop.location}
                   </p>
                   <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleToggleStatus(prop)}
-                      disabled={isPending || prop.status === "RENTED"}
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed ${STATUS_STYLES[prop.status]}`}
-                    >
-                      {STATUS_LABELS[prop.status]}
-                    </button>
+                    {prop.status === "RENTED" ? (
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}>
+                        Rented
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={prop.status === "AVAILABLE"}
+                          onClick={() => handleToggleStatus(prop)}
+                          disabled={isPending}
+                          className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${prop.status === "AVAILABLE" ? "bg-primary" : "bg-muted-foreground/30"}`}
+                        >
+                          <span
+                            className={`pointer-events-none block h-3 w-3 rounded-full bg-background shadow-lg ring-0 transition-transform ${prop.status === "AVAILABLE" ? "translate-x-3" : "translate-x-0"}`}
+                          />
+                        </button>
+                        <span className="text-[10px] font-medium uppercase text-muted-foreground">
+                          {prop.status === "AVAILABLE" ? "Avail" : "Unavail"}
+                        </span>
+                      </div>
+                    )}
                     <span className="flex items-center gap-1 text-xs font-medium text-yellow-500">
                       <Star size={12} className="fill-yellow-400" />
                       {prop.rating ? prop.rating.toFixed(1) : "N/A"}

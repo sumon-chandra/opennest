@@ -23,7 +23,8 @@ export async function deleteProperty(id: string): Promise<ApiResponse<null>> {
     {
       method: "DELETE",
       headers: {
-        Cookie: `accessToken=${accessToken}`,
+        "Content-Type": "application/json",
+        Authorization: accessToken,
       },
     },
   )

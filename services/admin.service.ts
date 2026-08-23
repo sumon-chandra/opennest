@@ -50,11 +50,11 @@ export async function getAllUsers(params?: { page?: number; limit?: number; sear
 export async function updateUserStatus(userId: string, status: UserStatus) {
   const accessToken = await isAccessTokenExist()
 
-  const res = await apiFetch(`/users/${userId}/status`, {
+  const res = await apiFetch(`admin/users/${userId}/status`, {
     method: "PATCH",
     headers: {
-      Authorization: accessToken!,
       "Content-Type": "application/json",
+      Authorization: accessToken!,
     },
     body: JSON.stringify({ status }),
     cache: "no-store",

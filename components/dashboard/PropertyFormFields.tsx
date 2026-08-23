@@ -517,22 +517,65 @@ export function PropertyFormFields() {
 
         {/* Visibility */}
         <FormSection title="Visibility" icon={<Tag size={16} />} delay={0.25}>
-          <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border px-4 py-3.5 transition-all hover:border-primary/40">
-            <input
-              type="checkbox"
-              {...register("isFeatured")}
-              className="mt-0.5 accent-primary"
+          <div className="space-y-4">
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => {
+                const isAvailable = field.value === "AVAILABLE"
+                const isRented = field.value === "RENTED"
+                
+                return (
+                  <div className="flex items-center justify-between rounded-lg border border-border px-4 py-3.5 transition-all hover:border-primary/40">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        Availability Status
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+                        {isRented 
+                          ? "This property is currently rented and cannot be changed here." 
+                          : "Turn this off to mark the property as unavailable."}
+                      </p>
+                    </div>
+                    {isRented ? (
+                      <span className="inline-flex items-center rounded-full bg-blue-500/15 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-400">
+                        Rented
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={isAvailable}
+                        onClick={() => field.onChange(isAvailable ? "UNAVAILABLE" : "AVAILABLE")}
+                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${isAvailable ? "bg-primary" : "bg-muted-foreground/30"}`}
+                      >
+                        <span
+                          className={`pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${isAvailable ? "translate-x-5" : "translate-x-0"}`}
+                        />
+                      </button>
+                    )}
+                  </div>
+                )
+              }}
             />
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                Featured Listing
-              </p>
-              <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
-                Featured properties appear prominently at the top of search
-                results and on the homepage.
-              </p>
-            </div>
-          </label>
+
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border px-4 py-3.5 transition-all hover:border-primary/40">
+              <input
+                type="checkbox"
+                {...register("isFeatured")}
+                className="mt-0.5 accent-primary"
+              />
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Featured Listing
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+                  Featured properties appear prominently at the top of search
+                  results and on the homepage.
+                </p>
+              </div>
+            </label>
+          </div>
         </FormSection>
       </div>
     </div>
