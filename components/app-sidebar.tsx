@@ -120,9 +120,19 @@ const adminNav = [
     icon: <UsersIcon />,
   },
   {
-    title: "Content Moderation",
-    url: "/dashboard/admin/moderation",
-    icon: <ShieldAlertIcon />,
+    title: "Property Moderation",
+    url: "/dashboard/admin/properties",
+    icon: <BuildingIcon />,
+  },
+  {
+    title: "Rental Requests",
+    url: "/dashboard/admin/rental-requests",
+    icon: <InboxIcon />,
+  },
+  {
+    title: "Review Moderation",
+    url: "/dashboard/admin/reviews",
+    icon: <StarIcon />,
   },
 ]
 

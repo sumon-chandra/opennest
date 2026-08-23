@@ -22,12 +22,15 @@ export default function PropertiesPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const filters = usePropertiesFilters()
 
+  console.log(filters)
+
   const { data: propertiesData, isPending: isPropertiesLoading } = useQuery<
     ApiResponse<PropertyResponse[]>
   >({
     queryKey: ["properties", filters],
     queryFn: async () => {
       const response = await getProperties({
+        categoryId: filters.categoryId ? filters.categoryId : undefined,
         location: filters.location.length > 0 ? filters.location : undefined,
         featured: filters.featured ? true : undefined,
         amenities: filters.amenities.length > 0 ? filters.amenities : undefined,

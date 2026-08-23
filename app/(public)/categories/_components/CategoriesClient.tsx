@@ -17,17 +17,17 @@ export function CategoriesClient({ categories }: CategoriesClientProps) {
   const [search, setSearch] = useState("")
 
   const filteredCategories = categories.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()),
+    c.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-chart-2/5 py-16 sm:py-20">
-        <div className="absolute -right-40 top-0 h-[400px] w-[400px] rounded-full bg-chart-2/8 blur-[120px]" />
-        <div className="absolute -left-40 bottom-0 h-[300px] w-[300px] rounded-full bg-primary/8 blur-[100px]" />
+        <div className="absolute top-0 -right-40 h-[400px] w-[400px] rounded-full bg-chart-2/8 blur-[120px]" />
+        <div className="absolute bottom-0 -left-40 h-[300px] w-[300px] rounded-full bg-primary/8 blur-[100px]" />
 
-        <div className="container relative mx-auto px-4 text-center sm:px-6 lg:px-8">
+        <div className="relative container mx-auto px-4 text-center sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export function CategoriesClient({ categories }: CategoriesClientProps) {
             {/* Search */}
             <div className="mx-auto max-w-md">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -73,7 +73,7 @@ export function CategoriesClient({ categories }: CategoriesClientProps) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
-                <Link href={`/properties?category=${category.id}`}>
+                <Link href={`/properties?categoryId=${category.id}`}>
                   <div className="group overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl">
                     {/* Image */}
                     <div className="relative h-52 w-full overflow-hidden bg-muted">
@@ -92,7 +92,7 @@ export function CategoriesClient({ categories }: CategoriesClientProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
                       {/* Overlay content */}
-                      <div className="absolute bottom-4 left-4 right-4">
+                      <div className="absolute right-4 bottom-4 left-4">
                         <h3 className="text-xl font-bold text-white">
                           {category.name}
                         </h3>

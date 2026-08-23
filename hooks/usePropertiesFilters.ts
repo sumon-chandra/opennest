@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation"
 
 export interface PropertiesFilters {
+  categoryId: string
   location: string[]
   featured: boolean
   amenities: string[]
@@ -16,6 +17,7 @@ export function usePropertiesFilters(): PropertiesFilters {
   const searchParams = useSearchParams()
 
   return {
+    categoryId: searchParams.get("categoryId") || "",
     location: searchParams.get("location")?.split(",").filter(Boolean) || [],
     featured: searchParams.get("featured") === "true",
     amenities: searchParams.get("amenities")?.split(",").filter(Boolean) || [],

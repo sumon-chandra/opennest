@@ -5,7 +5,17 @@ import { RentalRequest, TenantRentalRequest } from "@/types/requests"
 import { apiFetch } from "@/utils/apiFetch"
 import { cookies } from "next/headers"
 
-export const myRentalRequests = async () => {
+import { PaginatedMeta } from "@/types"
+
+export const myRentalRequests = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+}: {
+  page?: number
+  limit?: number
+  search?: string
+} = {}) => {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
@@ -18,7 +28,15 @@ export const myRentalRequests = async () => {
     }
   }
 
-  const res = await apiFetch("rental-requests/my-properties", {
+  const searchParams = new URLSearchParams()
+  if (page) searchParams.set("page", String(page))
+  if (limit) searchParams.set("limit", String(limit))
+  if (search) searchParams.set("searchTerm", search)
+
+  const query = searchParams.toString()
+  const endpoint = `rental-requests/my-properties${query ? `?${query}` : ""}`
+
+  const res = await apiFetch(endpoint, {
     method: "GET",
     headers: {
       Authorization: accessToken,
@@ -29,6 +47,6 @@ export const myRentalRequests = async () => {
     throw new Error("Failed to fetch rental requests")
   }
 
-  const data = (await res.json()) as ApiResponse<TenantRentalRequest[], null>
+  const data = (await res.json()) as ApiResponse<TenantRentalRequest[], PaginatedMeta>
   return data
 }

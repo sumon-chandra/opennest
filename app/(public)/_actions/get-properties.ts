@@ -5,6 +5,7 @@ import { ApiResponse } from "@/types"
 import { Property, PropertyResponse } from "@/types/property"
 
 interface GetPropertiesFilters {
+  categoryId?:string
   location?: string[]
   featured?: boolean
   amenities?: string[]
@@ -17,6 +18,10 @@ interface GetPropertiesFilters {
 export async function getProperties(filters?: GetPropertiesFilters) {
   // Build query parameters
   const params = new URLSearchParams()
+
+  if(filters?.categoryId){
+    params.append("categoryId", filters.categoryId)
+  }
 
   if (filters?.location && filters.location.length > 0) {
     filters.location.forEach((loc) => params.append("location", loc))

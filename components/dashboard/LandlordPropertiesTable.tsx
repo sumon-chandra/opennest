@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { PropertyResponse } from "@/types/property"
 import { deleteProperty } from "@/app/dashboard/landlord/_actions/delete-property"
+import { togglePropertyStatus } from "@/app/dashboard/landlord/_actions/toggle-property-status"
 import { toast } from "sonner"
 import {
   Table,
@@ -137,6 +138,32 @@ export function LandlordPropertiesTable({
 
   const handleDelete = (property: PropertyResponse) => {
     setDeleteTarget(property)
+  }
+
+  const handleToggleStatus = (property: PropertyResponse) => {
+    startTransition(async () => {
+      if (property.status === "RENTED") {
+        toast.error("Cannot toggle status of a rented property.")
+        return
+      }
+      
+      const result = await togglePropertyStatus(property.id, property.status)
+      if (result.success) {
+        toast.success("Property status updated")
+        setProperties((prev) =>
+          prev.map((p) =>
+            p.id === property.id
+              ? {
+                  ...p,
+                  status: p.status === "AVAILABLE" ? "UNAVAILABLE" : "AVAILABLE",
+                }
+              : p
+          )
+        )
+      } else {
+        toast.error(result.message || "Failed to update property status")
+      }
+    })
   }
 
   const confirmDelete = () => {
@@ -267,14 +294,16 @@ export function LandlordPropertiesTable({
                     </div>
                   </TableCell>
 
-                  {/* Status */}
                   <TableCell className="px-5 py-4">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}
+                    <button
+                      onClick={() => handleToggleStatus(prop)}
+                      disabled={isPending || prop.status === "RENTED"}
+                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed ${STATUS_STYLES[prop.status]}`}
+                      title={prop.status !== "RENTED" ? "Click to toggle status" : "Cannot toggle rented property"}
                     >
                       <span className="mr-1.5 size-1.5 rounded-full bg-current" />
                       {STATUS_LABELS[prop.status]}
-                    </span>
+                    </button>
                   </TableCell>
 
                   {/* Rating */}
@@ -370,11 +399,13 @@ export function LandlordPropertiesTable({
                     {prop.location}
                   </p>
                   <div className="flex items-center gap-3">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[prop.status]}`}
+                    <button
+                      onClick={() => handleToggleStatus(prop)}
+                      disabled={isPending || prop.status === "RENTED"}
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold transition-opacity hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed ${STATUS_STYLES[prop.status]}`}
                     >
                       {STATUS_LABELS[prop.status]}
-                    </span>
+                    </button>
                     <span className="flex items-center gap-1 text-xs font-medium text-yellow-500">
                       <Star size={12} className="fill-yellow-400" />
                       {prop.rating ? prop.rating.toFixed(1) : "N/A"}

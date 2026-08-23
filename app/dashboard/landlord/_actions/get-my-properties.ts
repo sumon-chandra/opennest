@@ -5,7 +5,15 @@ import { ApiResponse } from "@/types"
 import { PropertyMeta, PropertyResponse } from "@/types/property"
 import { cookies } from "next/headers"
 
-export async function getMyProperties(): Promise<ApiResponse<PropertyResponse[], PropertyMeta>> {
+export async function getMyProperties({
+  page = 1,
+  limit = 10,
+  search = "",
+}: {
+  page?: number
+  limit?: number
+  search?: string
+} = {}): Promise<ApiResponse<PropertyResponse[], PropertyMeta>> {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value || null
 
@@ -19,18 +27,23 @@ export async function getMyProperties(): Promise<ApiResponse<PropertyResponse[],
     }
   }
 
-  const res = await apiFetch(
-    `properties/my-properties`,
-    {
-      headers: {
-        Authorization: accessToken
-      },
-      cache: "no-store",
-      next: {
-        tags: ["my-properties"],
-      },
+  const searchParams = new URLSearchParams()
+  if (page) searchParams.set("page", String(page))
+  if (limit) searchParams.set("limit", String(limit))
+  if (search) searchParams.set("searchTerm", search)
+
+  const query = searchParams.toString()
+  const endpoint = `properties/my-properties${query ? `?${query}` : ""}`
+
+  const res = await apiFetch(endpoint, {
+    headers: {
+      Authorization: accessToken
     },
-  )
+    cache: "no-store",
+    next: {
+      tags: ["my-properties"],
+    },
+  })
 
   const result = (await res.json()) as ApiResponse<PropertyResponse[], PropertyMeta>
   return result

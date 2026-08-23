@@ -2,15 +2,34 @@ import Link from "next/link"
 import { Plus, Building2, CheckCircle2, XCircle, Key } from "lucide-react"
 import { getMyProperties } from "@/app/dashboard/landlord/_actions/get-my-properties"
 import { LandlordPropertiesTable } from "@/components/dashboard/LandlordPropertiesTable"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export const metadata = {
   title: "My Properties | OpenNest Landlord",
   description: "Manage all your property listings on OpenNest.",
 }
 
-export default async function LandlordPropertiesPage() {
-  const result = await getMyProperties()
+type Props = {
+  searchParams: Promise<{ page?: string; limit?: string }>
+}
+
+export default async function LandlordPropertiesPage({ searchParams }: Props) {
+  const resolvedParams = await searchParams
+  const page = parseInt(resolvedParams.page || "1", 10)
+  const limit = parseInt(resolvedParams.limit || "10", 10)
+
+  const result = await getMyProperties({ page, limit })
   const properties = result.data ?? []
+  const totalPages =
+    result.meta?.totalPages ||
+    Math.ceil((result.meta?.total || 0) / (result.meta?.limit || 10))
 
   const totalCount = properties.length
   const availableCount = properties.filter(
@@ -114,6 +133,36 @@ export default async function LandlordPropertiesPage() {
         </div>
         <LandlordPropertiesTable properties={properties} />
       </div>
+
+      {/* Pagination */}
+      {result.meta && totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={`?page=${Math.max(1, page - 1)}&limit=${limit}`}
+                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href={`?page=${i + 1}&limit=${limit}`}
+                  isActive={page === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href={`?page=${Math.min(totalPages, page + 1)}&limit=${limit}`}
+                className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   )
 }

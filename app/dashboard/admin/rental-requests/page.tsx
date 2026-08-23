@@ -1,15 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import { getAllUsers, updateUserStatus } from "@/services/admin.service"
-import type { UserStatus } from "@/types"
-import UsersTable from "@/components/dashboard/admin/UsersTable"
+import { getAllRentalRequestsAdmin } from "@/services/admin.service"
+import RentalRequestsTable from "@/components/dashboard/admin/RentalRequestsTable"
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-export default function AdminUsers() {
+export default function AdminRentalRequests() {
   const [searchQuery, setSearchQuery] = useState("")
 
   const router = useRouter()
@@ -39,40 +37,21 @@ export default function AdminUsers() {
   }
 
   const limit = 15
-  const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-users", searchQuery, page, limit],
+    queryKey: ["admin-rental-requests", searchQuery, page, limit],
     queryFn: () =>
-      getAllUsers({ search: searchQuery || undefined, page, limit }),
+      getAllRentalRequestsAdmin({
+        search: searchQuery || undefined,
+        page,
+        limit,
+      }),
   })
 
-  const statusMutation = useMutation({
-    mutationFn: ({ userId, status }: { userId: string; status: UserStatus }) =>
-      updateUserStatus(userId, status),
-    onSuccess: (result) => {
-      if (result.success) {
-        toast.success("User status updated successfully")
-        queryClient.invalidateQueries({ queryKey: ["admin-users"] })
-      } else {
-        toast.error(result.message || "Failed to update user status")
-      }
-    },
-    onError: () => {
-      toast.error("An error occurred while updating user status")
-    },
-  })
-
-  const users = data?.data ?? []
+  const requests = data?.data ?? []
   const totalPages =
     data?.meta?.totalPages ||
     Math.ceil((data?.meta?.total || 0) / (data?.meta?.limit || 10))
-
-  const handleStatusToggle = (userId: string, currentStatus: string) => {
-    const newStatus: UserStatus =
-      currentStatus === "ACTIVE" ? "BANNED" : "ACTIVE"
-    statusMutation.mutate({ userId, status: newStatus })
-  }
 
   return (
     <div className="space-y-6 p-6">
@@ -84,10 +63,10 @@ export default function AdminUsers() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            User Management
+            Rental Requests
           </h1>
           <p className="mt-2 text-muted-foreground">
-            View and manage all landlords and tenants on the platform.
+            View all platform-wide rental requests and their status.
           </p>
         </div>
       </motion.div>
@@ -98,7 +77,7 @@ export default function AdminUsers() {
           <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search by name or email..."
+            placeholder="Search by tenant or property..."
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -107,12 +86,7 @@ export default function AdminUsers() {
       </div>
 
       {/* Table */}
-      <UsersTable
-        users={users}
-        isLoading={isLoading}
-        handleStatusToggle={handleStatusToggle}
-        statusMutation={statusMutation}
-      />
+      <RentalRequestsTable requests={requests} isLoading={isLoading} />
 
       {/* Pagination */}
       {data?.meta && totalPages > 1 && (
@@ -141,9 +115,11 @@ export default function AdminUsers() {
             ))}
             <PaginationItem>
               <PaginationNext
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setPage((p) => Math.min(data.meta!.totalPages, p + 1))
+                }
                 className={
-                  page === totalPages
+                  page === data.meta.totalPages
                     ? "pointer-events-none opacity-50"
                     : "cursor-pointer"
                 }

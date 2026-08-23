@@ -1,4 +1,5 @@
 import { PaymentStatus, PropertyStatus } from "."
+import { PaginatedMeta } from "."
 
 export interface Property {
   id: string
@@ -37,7 +38,7 @@ export interface PropertyCategory {
   name: string;
 }
 
-export interface PropertyMeta {
+export interface PropertyMeta extends Partial<PaginatedMeta> {
   totalRevenue: number;
   activeProperties: number;
   totalBookingsThisMonth: number;

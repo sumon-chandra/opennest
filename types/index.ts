@@ -4,7 +4,14 @@ export type PropertyStatus = "AVAILABLE" | "RENTED" | "UNAVAILABLE"
 export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED"
 export type RentalRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED" | "COMPLETED"
 
-export interface ApiResponse<T, M = Record<string, any>> {
+export interface PaginatedMeta {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface ApiResponse<T, M = PaginatedMeta> {
   success: boolean
   statusCode: number
   message: string
