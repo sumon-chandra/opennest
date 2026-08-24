@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary"
+// import sharp from "sharp"
 
 // Configure Cloudinary using env vars
 cloudinary.config({
@@ -6,8 +7,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
-
-import sharp from "sharp"
 
 /**
  * Uploads a standard Web API File object to Cloudinary.
@@ -21,15 +20,15 @@ export async function uploadFileToCloudinary(
   const originalBuffer = Buffer.from(arrayBuffer)
 
   // Optimize image to keep it under ~200KB
-  const optimizedBuffer = await sharp(originalBuffer)
-    .resize({
-      width: 1920,
-      height: 1920,
-      fit: "inside",
-      withoutEnlargement: true,
-    })
-    .webp({ quality: 75 })
-    .toBuffer()
+  // const optimizedBuffer = await sharp(originalBuffer)
+  //   .resize({
+  //     width: 1920,
+  //     height: 1920,
+  //     fit: "inside",
+  //     withoutEnlargement: true,
+  //   })
+  //   .webp({ quality: 75 })
+  //   .toBuffer()
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -46,7 +45,7 @@ export async function uploadFileToCloudinary(
       },
     )
 
-    uploadStream.end(optimizedBuffer)
+    uploadStream.end(originalBuffer)
   })
 }
 
