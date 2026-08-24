@@ -207,10 +207,23 @@ export default async function PropertyDetailsPage({
               </div>
 
               <div className="mb-6 space-y-3">
-                <RequestRentalModal propertyId={property.id} />
-                <Button variant="outline" className="h-12 w-full text-lg">
-                  Schedule a Tour
-                </Button>
+                {property.status === "AVAILABLE" ? (
+                  <RequestRentalModal propertyId={property.id} />
+                ) : property.status === "RENTED" ? (
+                  <Button
+                    variant="outline"
+                    className="h-12 w-full text-lg font-black"
+                  >
+                    Booked
+                  </Button>
+                ) : property.status === "UNAVAILABLE" ? (
+                  <Button
+                    variant="outline"
+                    className="h-12 w-full text-lg font-black"
+                  >
+                    Unavailable
+                  </Button>
+                ) : null}
               </div>
 
               <div className="border-t pt-6">

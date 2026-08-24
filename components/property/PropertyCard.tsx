@@ -5,7 +5,11 @@ import Link from "next/link"
 import { Star, MapPin, Bed, Bath, Heart } from "lucide-react"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getFavoriteProperties, addFavoriteProperty, removeFavoriteProperties } from "@/app/dashboard/tenant/_actions/properties"
+import {
+  getFavoriteProperties,
+  addFavoriteProperty,
+  removeFavoriteProperties,
+} from "@/app/dashboard/tenant/_actions/properties"
 import { PropertyResponse } from "@/types/property"
 import Image from "next/image"
 
@@ -24,21 +28,23 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
     gcTime: 10 * 1000 * 60,
   })
 
-  const favoriteRecord = favoritesRes?.data?.find((f: any) => f.propertyId === property.id || f.id === property.id)
+  const favoriteRecord = favoritesRes?.data?.find(
+    (f: any) => f.propertyId === property.id || f.id === property.id
+  )
   const liked = !!favoriteRecord
 
   const addFavoriteMutation = useMutation({
     mutationFn: (id: string) => addFavoriteProperty(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorite-properties"] })
-    }
+    },
   })
 
   const removeFavoriteMutation = useMutation({
     mutationFn: (id: string) => removeFavoriteProperties(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorite-properties"] })
-    }
+    },
   })
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
@@ -50,7 +56,10 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
     }
   }
 
-  const propertyThumbnail = property.thumbnail || property.images?.[0] || "https://placehold.co/600x400/EEE/31343C.png?text=Property+Image+Unavailable"
+  const propertyThumbnail =
+    property.thumbnail ||
+    property.images?.[0] ||
+    "https://placehold.co/600x400/EEE/31343C.png?text=Property+Image+Unavailable"
 
   return (
     <motion.div
@@ -86,7 +95,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                 }
               />
             </button>
-            <div className="absolute bottom-3 left-3 rounded bg-foreground text-muted px-2 py-1 text-xs font-semibold">
+            <div className="absolute bottom-3 left-3 rounded bg-foreground px-2 py-1 text-xs font-semibold text-muted">
               {property.category.name}
             </div>
           </div>
@@ -117,30 +126,41 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
 
             {/* Rating */}
             <div className="flex justify-between">
-            <div className="mb-4 flex items-center gap-1 text-sm">
-              <Star size={16} className="fill-yellow-400 text-yellow-400" />
-              <span className="font-medium">{property.rating}</span>
-              <span className="text-muted-foreground">
-                ({property._count.reviews} Reviews)
-              </span>
-            </div>
-            {property._count.favoriteProperties > 0 && (
               <div className="mb-4 flex items-center gap-1 text-sm">
-                <Heart size={16} className="fill-red-500 text-red-500" />
-                <span className="font-medium">{property._count.favoriteProperties}</span>
+                <Star size={16} className="fill-yellow-400 text-yellow-400" />
+                <span className="font-medium">{property.rating}</span>
                 <span className="text-muted-foreground">
-                  Favorites
+                  ({property._count.reviews} Reviews)
                 </span>
               </div>
-            )}
+              {property._count.favoriteProperties > 0 && (
+                <div className="mb-4 flex items-center gap-1 text-sm">
+                  <Heart size={16} className="fill-red-500 text-red-500" />
+                  <span className="font-medium">
+                    {property._count.favoriteProperties}
+                  </span>
+                  <span className="text-muted-foreground">Favorites</span>
+                </div>
+              )}
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-foreground">
-                ${property.price}
-              </span>
-              <span className="text-sm text-muted-foreground">/night</span>
+            <div className="mb-4 flex items-baseline justify-between gap-1">
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-foreground">
+                  ${property.price}
+                </span>
+                <span className="text-sm text-muted-foreground">/night</span>
+              </div>
+              {property.status === "RENTED" ? (
+                <div className="ml-3 rounded-full bg-destructive px-4 py-1 text-xs font-semibold text-white">
+                  <span className="font-medium">Rented</span>
+                </div>
+              ) : property.status === "UNAVAILABLE" ? (
+                <div className="ml-3 rounded-full bg-slate-600 px-4 py-1 text-xs font-semibold text-white">
+                  <span className="font-medium">Not Available</span>
+                </div>
+              ) : null}
             </div>
           </div>
         </motion.div>

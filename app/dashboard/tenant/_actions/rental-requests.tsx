@@ -47,6 +47,10 @@ export const myRentalRequests = async ({
     throw new Error("Failed to fetch rental requests")
   }
 
-  const data = (await res.json()) as ApiResponse<TenantRentalRequest[], PaginatedMeta>
+  const data = (await res.json()) as ApiResponse<
+    TenantRentalRequest[],
+    PaginatedMeta
+  >
+  console.log({ TenantRentalRequests: data.data })
   return data
 }
